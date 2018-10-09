@@ -1,0 +1,75 @@
+.fondo-pantalla{
+    position: fixed!important;
+    width: 100vw;
+    height: 100vh;
+}
+
+.oculto{
+    display: none;
+}
+
+.indice-z-fondo{
+    z-index: 101;
+}
+
+.lista1{
+    display: none;
+}
+
+.lista0{
+    list-style-image: url('/img/iconos/sin_documentos.png');
+}
+
+.lista2{
+    list-style-image: url('/img/iconos/con_tiempo.png');
+}
+.lista3{
+    list-style-image: url('/img/iconos/sin_tiempo.png');
+}
+
+.cuerpo {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.contenido{
+    margin-bottom: 10px;
+}
+
+.sin-margenes{
+    margin: 0!important;
+}
+
+.margen-boton-accion{
+    margin: 5px!important;
+}
+
+iframe {
+    display: block;
+    background: #000;
+    border: none;
+    height: 90vh;
+}
+
+#contenedor_mensajes_emergentes{
+    display: block;
+    position: fixed;
+    z-index: 10000;
+    top: 100px;
+    right: 50px;
+    margin-left: 50px;
+}
+
+@media only screen and (max-width:767px)
+{
+    #contenedor_mensajes_emergentes{
+        top: 170px;
+        right: 10px;
+        margin-left: 10px;
+    }
+}
