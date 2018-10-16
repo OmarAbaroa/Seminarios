@@ -13,7 +13,7 @@
 
 Route::get('/', 'ControladorUsuario@inicio')->name('inicio');
 Route::post('/', 'ControladorUsuario@ingresar');
-//Route::get('/', 'ControladorUsuario@inicio')->name('login');
+Route::get('/', 'ControladorUsuario@inicio')->name('login');
 
 Route::group(['middleware' => ['auth']], function()
     {
