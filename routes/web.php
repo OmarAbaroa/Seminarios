@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth']], function()
         Route::put('/catalogos/sexos/editar/{id}', 'ControladorSexo@actualizar');
         Route::delete('/catalogos/sexos/eliminar/{id}', 'ControladorSexo@eliminar')->name('eliminar_sexo');
 
+        
         Route::get('/catalogos/areas', 'ControladorArea@verTodas')->name('areas');
         Route::get('/catalogos/areas/crear', 'ControladorArea@crear')->name('crear_area');
         Route::post('/catalogos/areas/crear', 'ControladorArea@almacenar');
