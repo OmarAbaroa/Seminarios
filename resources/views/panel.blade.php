@@ -156,4 +156,45 @@
             <div class="ui text loader">Espere un momento</div>
         </div>
     </div>
+    <table class="ui celled striped table">
+        <thead>
+            <tr>
+                <th>
+                    Seminarios faltantes de entregar lista inicial (20 días hábiles superados)
+                </th>
+                <th>
+                    Unidad Académica
+                </th>
+                <th>
+                    Acción
+                </th>
+            </tr>
+        </thead>
+    <?php 
+        Use App\AvisoSeminario;
+        $avisos = AvisoSeminario::where('fecha_entrega_lista_inicial', '<=', date("Y-m-d"))->get();
+    ?>    
+        @foreach($avisos as $aviso)
+            @if(date("Y-m-d") > $aviso->fecha_entrega_lista_oficial )
+                
+                <tr>
+                    <td>
+                        {{$aviso->seminario->nombre}}
+                    </td>
+                    <td>
+                        {{$aviso->seminario->unidadAcademica->siglas}}
+                    </td>
+                    <td>
+                        @include('elementos_html.button', [
+                            'class' => 'red margen-boton-accion',
+                            'icono' => 'pencil alternate',
+                            'popup' => 'Lista inicial',
+                            'onclick' => 'redireccionar("' . route('lista_inicial', ['id' => $aviso->seminario->id]) . '")'
+                        ])
+                    </td>
+                </tr>
+            @endif
+        @endforeach
+    
+    </table>
 @endsection

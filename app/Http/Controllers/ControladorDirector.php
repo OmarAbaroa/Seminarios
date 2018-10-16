@@ -24,6 +24,13 @@ class ControladorDirector extends Controller
                                 ->paginate(env('ELEMENTOS_POR_PAGINA'))
                                 ->appends($request->except('page'));
             }
+            elseif($request->filtro_unidad_academica)
+            {
+                $directores = Director::DeUnidadAcademica($request->filtro_unidad_academica, '=')
+                                ->orderBy('id_unidad_academica', 'ASC')
+                                ->paginate(env('ELEMENTOS_POR_PAGINA'))
+                                ->appends($request->except('page'));
+            }
             else
             {
                 $directores = Director::orderBy('id_unidad_academica', 'ASC')

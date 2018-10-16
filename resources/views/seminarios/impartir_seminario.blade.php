@@ -4,10 +4,10 @@
 
 @section('contenido')
     <div class="ui center aligned container">
-        <h1 class="ui blue header">Seminarios</h1>
+        <h1 class="ui blue header">Impartir seminarios</h1>
     </div>
     <br/>
-    <div class="ui styled fluid accordion">
+    <div class="ui center aligned container">
         <div class="title">
             <i class="search icon"></i>
             Buscar por:
@@ -20,23 +20,6 @@
                     'etiqueta' => 'Nombre',
                     'placeholder' => 'Nombre',
                     'anterior' => old('filtro_nombre')
-                ])
-                @include('elementos_html.select_field', [
-                    'id' => 'filtro_unidad_academica',
-                    'nombre' => 'filtro_unidad_academica',
-                    'etiqueta' => 'Unidad Academica',
-                    'sin_seleccion' => 'Todos',
-                    'anterior' => old('filtro_unidad_academica'),
-                    'elementos' => $unidades_academicas,
-                    'texto_filtro_todos' => 'Todos',
-                    'campo_nombre' => 'siglas',
-                ])
-                @include('elementos_html.input_field', [
-                    'id' => 'filtro_registro',
-                    'nombre' => 'filtro_registro',
-                    'etiqueta' => 'Registro',
-                    'placeholder' => 'Registro',
-                    'anterior' => old('filtro_registro')
                 ])
                 <div class="ui divider"></div>
                 <div class="ui grid">
@@ -52,7 +35,7 @@
                                 'class' => 'red cargar',
                                 'popup' => 'Limpiar campos',
                                 'icono' => 'erase',
-                                'onclick' => 'redireccionar("' . route('seminarios') . '")'
+                                'onclick' => 'redireccionar("' . route('impartir_seminario') . '")'
                             ])
                         </div>
                     </div>
@@ -61,20 +44,7 @@
         </div>
     </div>
     <br/>
-    @include('elementos_html.button', [
-        'class' => 'red labeled margen-boton-accion',
-        'etiqueta' => 'Regresar',
-        'icono' => 'arrow left',
-        'tipo' => 'button',
-        'onclick' => 'redireccionar("' . route('panel') .'")'
-    ])
-    @include('elementos_html.button', [
-        'class' => 'primary labeled margen-boton-accion',
-        'etiqueta' => 'Crear Seminario',
-        'icono' => 'plus',
-        'tipo' => 'button',
-        'onclick' => 'redireccionar("' . route('cargar_seminario') .'")'
-    ])
+    
     <table class="ui celled striped table">
         <thead>
             <tr>
@@ -95,9 +65,6 @@
                     Impartido
                 </th>
                 <th>
-                    Documentos por entregar:
-                </th>
-                <th>
                     Acciones
                 </th>
             </tr>
@@ -105,6 +72,23 @@
         <tbody>
             @if(count($seminarios) > 0)
                 @foreach($seminarios as $seminario)
+                <?php 
+                    $limite_inferior = $seminario->periodo_inicio;
+                    $limite_superior = $seminario->periodo_fin;
+                    $limite_aux = $seminario->vigencia_fin;
+                    if($seminario->periodo_fin <> NULL && $seminario->periodo_inicio <> NULL && $seminario->vigencia_fin < $seminario->periodo_inicio && $seminario->vigencia_fin < $seminario->periodo_fin)
+                    {
+                        $seminario->periodo_fin = NULL;
+                        $seminario->periodo_inicio = NULL;
+                        $seminario->memorandum = NULL;
+                        //Use App\Horario;
+                        $horarios = Horario::DeSeminario($seminario->id)->get();
+                        foreach($horarios as $horario){
+                            $horario->detele();
+                        }
+                        $seminario->save();
+                    }
+                ?>
                     <tr>
                         <td>
                             <ul>
@@ -159,56 +143,27 @@
                             {{$seminario->impartido}} veces
                         </td>
                         <td>
-                            <ul>
-                                <li class="lista{{$seminario->cronograma}}">Cronograma</li>
-                                <li class="lista{{$seminario->programa}}">Programa</li>
-                                <li class="lista{{$seminario->cv_expositores}}">CV de expositores</li>
-                                <li class="lista{{$seminario->pago}}">Pago</li>
-                                <li class="lista{{$seminario->rua}}">RUA</li>
-                                <li class="lista{{$seminario->lista_inicial}}">Lista inicial</li>
-                                <li class="lista{{$seminario->acta_consejo}}">Acta del consejo</li>
-                                <li class="lista{{$seminario->aval_academico}}">Aval académico</li>
-                                <li class="lista{{$seminario->lista_oficial}}">Lista Oficial</li>
-                                <li class="lista{{$seminario->relacion_asistencia}}">Relación de asistencia</li>
-                                <li class="lista{{$seminario->evaluacion_final}}">Evaluación final</li>
-                                <li class="lista{{$seminario->trabajos_finales}}">Trabajos finales</li>
-                                @if($seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->lista_inicial == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $seminario->lista_oficial  == 1 && $seminario->relacion_asistencia == 1 && $seminario->evaluacion_final == 1 && $seminario->trabajos_finales == 1)
-                                    <li class="lista5"></li>
-                                @endif
-                            </ul>
-
-                            
-                        
-                        <td>
                             
                             @include('elementos_html.button', [
                                 'class' => 'primary margen-boton-accion',
                                 'icono' => 'edit',
                                 'popup' => 'Editar',
-                                'onclick' => 'redireccionar("' . route('editar_seminario', ['id' => $seminario->id, 'impartir' => 0]) . '")'
+                                'onclick' => 'redireccionar("' . route('editar_seminario', ['id' => $seminario->id, 'impartir' => 1]) . '")'
                             ])
-                            @if($seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $sin_vigencia == 0)
+                            @if($seminario->lista_inicial == 1 && $sin_vigencia == 0)
                                 @include('elementos_html.button', [
                                     'class' => 'yellow margen-boton-accion',
-                                    'icono' => 'envelope outline',
-                                    'popup' => 'Generar memorandum',
-                                    'onclick' => 'redireccionar("' . route('generar_memorandum', ['id' => $seminario->id]) . '")'
+                                    'icono' => 'table',
+                                    'popup' => 'Asignar periodo y horarios',
+                                    'onclick' => 'redireccionar("' . route('impartir_seminario_id', ['id' => $seminario->id]) . '")'
                                 ])
                             @endif
-                            @if($seminario->memorandum == 1 && $seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $sin_vigencia == 0)
-                                @include('elementos_html.button', [
-                                    'class' => 'black margen-boton-accion',
-                                    'icono' => 'file outline',
-                                    'popup' => 'Generar respuesta',
-                                    'onclick' => 'abrirModal("generar_respuesta_' . $seminario->id . '")'
-                                ])
-                            @endif
-                            @if(0 && $seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $seminario->lista_oficial  == 1 && $seminario->relacion_asistencia == 1 && $seminario->evaluacion_final == 1 && $seminario->trabajos_finales == 1 && $sin_vigencia == 0) 
+                            @if(0 && $seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->lista_inicial == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $seminario->lista_oficial  == 1 && $seminario->relacion_asistencia == 1 && $seminario->evaluacion_final == 1 && $seminario->trabajos_finales == 1 && $sin_vigencia == 0) 
                                 @include('elementos_html.button', [
                                     'class' => 'green margen-boton-accion',
                                     'icono' => 'archive',
-                                    'popup' => 'Generar respuesta',
-                                    'onclick' => 'abrirModal("generar_respuesta_' . $seminario->id . '")'
+                                    'popup' => 'Generar constancias',
+                                    
                                 ])
                             @endif
                             @include('elementos_html.button', [
@@ -238,28 +193,6 @@
                                     <div class="ui red cancel button">No</div>
                                 </div>
                             </div>
-
-                            <div id="generar_respuesta_{{$seminario->id}}" class="ui modal">
-                                <div class="header">Generar respuesta del seminario</div>
-                                <div class="content">
-                                    <form id="form_generar_respuesta_{{$seminario->id}}" method="post" action="{{route('generar_respuesta', ['id' => $seminario->id])}}" class="ui form">
-                                        {{csrf_field()}}
-                                        {{method_field('patch')}}
-                                        <select name='respuesta' id='respuesta'>
-                                            <option value="0">Favorable</option>
-                                            <option value="1">Desfavorable</option>
-                                        </select> 
-                                    </form>
-                                </div>
-                                <div class="actions">
-                                    @include('elementos_html.button', [
-                                        'class' => 'green ok cargar',
-                                        'etiqueta' => 'Sí',
-                                        'onclick' => 'enviarForm("form_generar_respuesta_' . $seminario->id . '")'
-                                    ])
-                                    <div class="ui red cancel button">No</div>
-                                </div>
-                            </div>
                         </td>
                     </tr>
                 @endforeach
@@ -273,4 +206,5 @@
         </tbody>
         {{$seminarios->links()}}
     </table>
+    
 @endsection

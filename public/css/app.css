@@ -27,6 +27,12 @@
     list-style-image: url('/img/iconos/sin_tiempo.png');
 }
 
+.lista4{
+    list-style-image: url('/img/iconos/peligro_tiempo.png');
+}
+.lista5{
+    list-style-image: url('/img/iconos/con_documentos.png');
+}
 .cuerpo {
     display: flex;
     min-height: 100vh;

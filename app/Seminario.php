@@ -99,6 +99,16 @@ class Seminario extends Model
         return ModeloGenerico::scopeGenericoSimple($query, 'trabajos_finales', $trabajos_finales, $comparador, $operador, $operador_null);
     }
 
+    public function scopeMemorandum($query, $memorandum, $comparador = '=', $operador = '&&' , $operador_null = '')
+    {
+        return ModeloGenerico::scopeGenericoSimple($query, 'memorandum', $memorandum, $comparador, $operador, $operador_null);
+    }
+
+    public function scopeRespuesta($query, $respuesta, $comparador = '=', $operador = '&&' , $operador_null = '')
+    {
+        return ModeloGenerico::scopeGenericoSimple($query, 'respuesta', $respuesta, $comparador, $operador, $operador_null);
+    }
+
     public function scopeVigenciaInicio($query, $vigencia_inicio, $comparador = '=', $operador = '&&' , $operador_null = '')
     {
         return ModeloGenerico::scopeGenericoSimple($query, 'vigencia_inicio', $vigencia_inicio, $comparador, $operador, $operador_null);
@@ -133,4 +143,6 @@ class Seminario extends Model
     {
         return ModeloGenerico::scopeGenericoSimple($query, 'id_tipo_seminario', $id_tipo_seminario, $comparador, $operador, $operador_null);
     }
+
+    
 }

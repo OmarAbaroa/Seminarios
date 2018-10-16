@@ -23,6 +23,36 @@ return [
         ],
     ],
 
+    'seminarios' => [
+        'exito' => [
+            'almacenar' => 'El seminario ha sido creado correctamente.',
+            'actualizar' => 'El seminario ha sido guardado correctamente.',
+            'eliminar' => 'El seminario ha sido eliminado correctamente.',
+        ],
+        'error' => [
+            'nombre' => 'El nombre del seminario ingresado se encuentra en uso.',
+            'registro' => 'El registro del seminario se encuentra en uso.',
+            'editar' => 'Ha ocurrido un error al tratar de editar el seminario, inténtelo nuevamente.',
+            'actualizar' => 'Ha ocurrido un error al tratar de guardar el seminario, inténtelo nuevamente.',
+            'eliminar' => 'Ha ocurrido un error al tratar de eliminar el seminario, inténtelo nuevamente.',
+        ],
+    ],
+
+    'horarios' => [
+        'exito' => [
+            'almacenar' => 'El seminario ha sido creado correctamente.',
+            'actualizar' => 'El seminario ha sido guardado correctamente.',
+            'eliminar' => 'El seminario ha sido eliminado correctamente.',
+        ],
+        'error' => [
+            'nombre' => 'El nombre del seminario ingresado se encuentra en uso.',
+            'registro' => 'El registro del seminario se encuentra en uso.',
+            'editar' => 'Ha ocurrido un error al tratar de editar el seminario, inténtelo nuevamente.',
+            'actualizar' => 'Ha ocurrido un error al tratar de guardar el seminario, inténtelo nuevamente.',
+            'eliminar' => 'Ha ocurrido un error al tratar de eliminar el seminario, inténtelo nuevamente.',
+        ],
+    ],
+
     'usuarios' => [
         'exito' => [
             'almacenar' => 'El usuario ha sido creado correctamente.',

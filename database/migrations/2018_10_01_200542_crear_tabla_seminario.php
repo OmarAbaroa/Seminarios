@@ -26,16 +26,21 @@ class CrearTablaSeminario extends Migration
             $table->boolean('cv_expositores')->default("0");
             $table->boolean('pago')->default("0");
             $table->boolean('rua')->default("0");
+            $table->boolean('lista_inicial')->default("0");
+            $table->boolean('acta_consejo')->default("0");
+            $table->boolean('aval_academico')->default("0");
             $table->boolean('lista_oficial')->default("0");
             $table->boolean('relacion_asistencia')->default("0");
             $table->boolean('evaluacion_final')->default("0");
             $table->boolean('trabajos_finales')->default("0");
+            $table->boolean('memorandum')->default("0");
+            $table->string('respuesta')->nullable()->default(NULL);
             $table->date('vigencia_inicio')->nullable()->default(NULL);
             $table->date('vigencia_fin')->nullable()->default(NULL);
             $table->date('periodo_inicio')->nullable()->default(NULL);
             $table->date('periodo_fin')->nullable()->default(NULL);
             $table->integer('impartido')->default("0");
-
+            $table->date('fecha_entrega_lista_inicial')->nullable()->default(NULL);
             $table->timestamps();
             $table->softDeletes();
 

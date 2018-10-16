@@ -23,17 +23,18 @@
             Administrar catálogos
         </a>
     @endif
-    <a class="item" href="{{route('seminarios')}}">
-        <i class="search icon"></i>
-        Buscar seminarios
-    </a>
     <a class="item" href="{{route('cargar_seminario')}}">
         <i class="upload icon"></i>
         Cargar seminario
     </a>
-    <a class="item" href="reportes">
-        <i class="book icon"></i>
-        Generar reportes
+    
+    <a class="item" href="{{route('seminarios')}}">
+        <i class="search icon"></i>
+        Buscar seminarios
+    </a>
+    <a class="item" href="{{route('impartir_seminario')}}">
+        <i class="play icon"></i>
+        Impartir seminario
     </a>
     <a class="item" onclick="salir()">
         <i class="sign out icon"></i>

@@ -13,6 +13,7 @@
 
 Route::get('/', 'ControladorUsuario@inicio')->name('inicio');
 Route::post('/', 'ControladorUsuario@ingresar');
+Route::get('/', 'ControladorUsuario@inicio')->name('login');
 
 Route::group(['middleware' => ['auth']], function()
     {
@@ -87,5 +88,20 @@ Route::group(['middleware' => ['auth']], function()
         Route::get('/seminarios', 'ControladorSeminario@verTodos')->name('seminarios');
         Route::get('/seminarios/cargar', 'ControladorSeminario@cargar')->name('cargar_seminario');
         Route::post('/seminarios/cargar', 'ControladorSeminario@almacenar');
+        Route::patch('/seminario/respuesta/{id}', 'ControladorSeminario@generarRespuesta')->name('generar_respuesta');
+
+        Route::get('/seminarios/editar/{id}{impartir}', 'ControladorSeminario@editar')->name('editar_seminario');
+        Route::put('/seminarios/editar/{id}{impartir}', 'ControladorSeminario@actualizar');
+        Route::get('/seminarios/memorandum/{id}', 'ControladorSeminario@generarMemorandum')->name('generar_memorandum');
+        Route::get('/seminarios/editar/lista-inicial/{id}', 'ControladorSeminario@entregoListaInicial')->name('lista_inicial');
+        Route::delete('/seminarios/eliminar/{id}', 'ControladorSeminario@eliminar')->name('eliminar_seminario');
+        Route::get('/seminarios/impartir', 'ControladorSeminario@verImpartir')->name('impartir_seminario');
+        Route::get('/seminarios/impartir/{id}', 'ControladorSeminario@impartir')->name('impartir_seminario_id');
+        Route::put('/seminarios/impartir/{id}', 'ControladorSeminario@impartirSeminario');
+
+        Route::patch('/seminario/cargar-horario', 'ControladorHorario@cargar');
+        Route::delete('/seminario/horario/eliminar/{id}', 'ControladorHorario@eliminar')->name('eliminar_horario');
+
+
     }
 );

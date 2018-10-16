@@ -70,7 +70,7 @@
         <table class="ui celled striped table">
             <thead>
                 <tr>
-                    <th colspan="5" class="ui center aligned"> 
+                    <th colspan="8" class="ui center aligned"> 
                         Seleccione los documentos entregados:
                     </th>
                 </tr>
@@ -83,6 +83,7 @@
                             'nombre' => 'cronograma',
                             'etiqueta' => 'Cronograma',
                             'anterior' => old('cronograma'),
+                            
                         ]) 
                     </td>
                     <td>
@@ -115,6 +116,22 @@
                             'nombre' => 'rua',
                             'etiqueta' => 'RUA',
                             'anterior' => old('rua')
+                        ])
+                    </td>
+                    <td>
+                        @include('elementos_html.checkbox', [
+                            'id' => 'acta_consejo',
+                            'nombre' => 'acta_consejo',
+                            'etiqueta' => 'Acta del consejo',
+                            'anterior' => old('acta_consejo')
+                        ])
+                    </td>
+                    <td>
+                        @include('elementos_html.checkbox', [
+                            'id' => 'aval_academico',
+                            'nombre' => 'aval_academico',
+                            'etiqueta' => 'Aval Académico',
+                            'anterior' => old('aval_academico')
                         ])
                     </td>       
             </tbody>
