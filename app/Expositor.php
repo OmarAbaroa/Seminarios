@@ -37,6 +37,11 @@ class Expositor extends Model
         return ModeloGenerico::scopeGenericoSimple($query, 'apellidos', $apellidos, $comparador, $operador, $operador_null);
     }
 
+    public function scopeNumeroEmpleado($query, $numero_empleado, $comparador = '=', $operador = '&&' , $operador_null = '')
+    {
+        return ModeloGenerico::scopeGenericoSimple($query, 'numero_empleado', $numero_empleado, $comparador, $operador, $operador_null);
+    }
+
     public function scopeExtension($query, $extension, $comparador = '=', $operador = '&&' , $operador_null = '')
     {
         return ModeloGenerico::scopeGenericoSimple($query, 'extension', $extension, $comparador, $operador, $operador_null);

@@ -40,7 +40,7 @@
         <i class="cloud upload icon"></i>
         Cargar alumnos
     </a>
-    <a class="item" href="{{route('impartir_seminario')}}">
+    <a class="item" href="{{route('cargar_expositor')}}">
         <i class="cloud upload icon"></i>
         Cargar expositores
     </a>
