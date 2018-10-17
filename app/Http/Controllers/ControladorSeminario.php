@@ -248,7 +248,8 @@ class ControladorSeminario extends Controller
 
     public function verImpartir(Request $request)
     {
-        $fecha_limite = date("Y-m-d", strtotime(date("Y-m-d").' + 2 days'));
+        $aux = date("Y-m-d");
+        $fecha_limite = date("Y-m-d", strtotime($aux.' - 2 months'));
         if($request->filtro_nombre)
         {
             $seminarios = Seminario::where([['nombre','LIKE', '%'.strtoupper($request->filtro_nombre).'%'],['vigencia_fin','>',$fecha_limite],['registro','<>',NULL],['deleted_at','=',NULL],['memorandum','=',1],['respuesta','=','FAVORABLE']])
@@ -302,16 +303,12 @@ class ControladorSeminario extends Controller
             $fecha = $_fecha[2]."/".$_fecha[1]."/".$_fecha[0];
             $seminario->periodo_fin = date("Y-m-d", strtotime($fecha));
 
-            if($seminario->periodo_fin > $seminario->periodo_inicio && $seminario->periodo_fin < $seminario->vigencia_fin && $seminario->periodo_inicio < $seminario->vigencia_fin && $seminario->periodo_fin > $seminario->vigencia_inicio && $seminario->periodo_inicio > $seminario->vigencia_inicio)
+            if($seminario->periodo_fin > $seminario->periodo_inicio && $seminario->periodo_fin < date("Y-m-d", strtotime($seminario->vigencia_fin.'+ 2 months')) && $seminario->periodo_inicio < date("Y-m-d", strtotime($seminario->vigencia_fin.'+ 2 months')) && $seminario->periodo_fin > $seminario->vigencia_inicio && $seminario->periodo_inicio > $seminario->vigencia_inicio)
             {
                 $seminario->save();
                 return back()->with('mensaje_exito', trans('mensajes.seminarios.exito.editar'));
-            }
-            
-            
+            }  
             return back()->with('mensaje_error', 'El periodo queda fuera de vigencia.');
-            
-            
         }
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.editar'));
     }

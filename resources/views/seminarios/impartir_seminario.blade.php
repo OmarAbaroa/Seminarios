@@ -75,16 +75,17 @@
                 <?php 
                     $limite_inferior = $seminario->periodo_inicio;
                     $limite_superior = $seminario->periodo_fin;
-                    $limite_aux = $seminario->vigencia_fin;
-                    if($seminario->periodo_fin <> NULL && $seminario->periodo_inicio <> NULL && $seminario->vigencia_fin < $seminario->periodo_inicio && $seminario->vigencia_fin < $seminario->periodo_fin)
+                    $limite_aux = date("Y-m-d", strtotime($seminario->vigencia_fin.' + 2 months'));
+                    //$limite_aux = $seminario->vigencia_fin;
+                    if($seminario->periodo_fin <> NULL && $seminario->periodo_inicio <> NULL && $limite_aux < $seminario->periodo_inicio && $seminario->vigencia_fin < $seminario->periodo_fin)
                     {
                         $seminario->periodo_fin = NULL;
                         $seminario->periodo_inicio = NULL;
-                        $seminario->memorandum = NULL;
+                        $seminario->memorandum = 0;
                         //Use App\Horario;
-                        $horarios = Horario::DeSeminario($seminario->id)->get();
+                        $horarios = App\Horario::DeSeminario($seminario->id)->get();
                         foreach($horarios as $horario){
-                            $horario->detele();
+                            $horario->delete();
                         }
                         $seminario->save();
                     }

@@ -103,6 +103,9 @@ Route::group(['middleware' => ['auth']], function()
         Route::patch('/seminario/cargar-horario', 'ControladorHorario@cargar');
         Route::delete('/seminario/horario/eliminar/{id}', 'ControladorHorario@eliminar')->name('eliminar_horario');
 
+        Route::get('/alumnos', 'ControladorAlumno@verCargarAlumno')->name('cargar_alumno');
+        //Route::post('/alumnos', 'ControladorAlumno@verCargarAlumno')
+
 
     }
 );

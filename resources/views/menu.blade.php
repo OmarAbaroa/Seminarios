@@ -36,6 +36,14 @@
         <i class="play icon"></i>
         Impartir seminario
     </a>
+    <a class="item" href="{{route('cargar_alumno')}}">
+        <i class="cloud upload icon"></i>
+        Cargar alumnos
+    </a>
+    <a class="item" href="{{route('impartir_seminario')}}">
+        <i class="cloud upload icon"></i>
+        Cargar expositores
+    </a>
     <a class="item" onclick="salir()">
         <i class="sign out icon"></i>
         Salir
