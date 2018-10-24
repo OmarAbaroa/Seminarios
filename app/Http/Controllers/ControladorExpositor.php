@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 Use App\Expositor;
+Use App\Seminario;
+Use App\SeminarioExpositor;
 
 class ControladorExpositor extends Controller
 {
@@ -24,7 +26,12 @@ class ControladorExpositor extends Controller
         {
             return back()->with('mensaje_error', trans('mensajes.expositores.error.archivo_formato'))->withInput();
         }
-
+        $seminario = $request->seminario;
+        $_seminario = Seminario::Nombre($seminario)->first();
+        if(!$_seminario)
+        {
+            return back()->with('mensaje_error', 'Hubo un error al cargar a los expositores')->withInput();
+        }
         $intervalos = explode(',', str_replace(' ', '', $request->intervalo),0);
         $excel = \Excel::selectSheetsByIndex(0)->load($archivo, function($excel) {})->get();
         $conflicto_texto = '';
@@ -45,7 +52,10 @@ class ControladorExpositor extends Controller
                 $_numero_empleado = Expositor::NumeroEmpleado($numero_empleado)->first();
                 if($_numero_empleado)
                 {   
-                    $conflicto_texto .= ' '.$numero;
+                    $seminario_expositor = new SeminarioExpositor;
+                    $seminario_expositor->id_expositor = $_numero_empleado->id;
+                    $seminario_expositor->id_seminario = $_seminario->id;
+                    $seminario_expositor->save();
                 }
                 else
                 {
@@ -58,6 +68,12 @@ class ControladorExpositor extends Controller
                     $expositor->correo = $correo;
                     $expositor->telefono = $telefono;
                     $expositor->save();
+                    
+                    $_numero_empleado = Expositor::NumeroEmpleado($numero_empleado)->first();
+                    $seminario_expositor = new SeminarioExpositor;
+                    $seminario_expositor->id_expositor = $_numero_empleado->id;
+                    $seminario_expositor->id_seminario = $_seminario->id;
+                    $seminario_expositor->save();
                 }
             }
         }

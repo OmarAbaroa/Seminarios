@@ -81,7 +81,7 @@
                     {
                         $seminario->periodo_fin = NULL;
                         $seminario->periodo_inicio = NULL;
-                        $seminario->memorandum = 0;
+
                         //Use App\Horario;
                         $horarios = App\Horario::DeSeminario($seminario->id)->get();
                         foreach($horarios as $horario){
@@ -159,14 +159,16 @@
                                     'onclick' => 'redireccionar("' . route('impartir_seminario_id', ['id' => $seminario->id]) . '")'
                                 ])
                             @endif
-                            @if(0 && $seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->lista_inicial == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $seminario->lista_oficial  == 1 && $seminario->relacion_asistencia == 1 && $seminario->evaluacion_final == 1 && $seminario->trabajos_finales == 1 && $sin_vigencia == 0) 
+                           
+                            @if($seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->lista_inicial == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $seminario->lista_oficial  == 1 && $seminario->relacion_asistencia == 1 && $seminario->evaluacion_final == 1 && $seminario->trabajos_finales == 1 && $sin_vigencia == 0) 
                                 @include('elementos_html.button', [
                                     'class' => 'green margen-boton-accion',
                                     'icono' => 'archive',
                                     'popup' => 'Generar constancias',
-                                    
+                                    'onclick' => 'redireccionar("' . route('generar_constancia', ['id' => $seminario->id]) . '")'
                                 ])
                             @endif
+                            
                             @include('elementos_html.button', [
                                 'class' => 'red margen-boton-accion',
                                 'icono' => 'cancel',

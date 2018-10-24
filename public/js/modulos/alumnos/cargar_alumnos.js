@@ -23,6 +23,42 @@ $('#form_cargar_alumnos').form({
                 }
             ]
         },
+        seminario: {
+            identifier: 'seminario',
+            rules: [
+                {
+                    type: 'empty',
+                    prompt: 'Por favor, ingrese un seminario.'
+                }
+            ]
+        },
     }
 });
 
+$(document).ready(function(){
+    $('#seminario').closest('.search').search({
+        apiSettings: {
+            url: '/seminarios/buscar?seminario={seminario}',
+            beforeSend: function(settings) {
+                settings.urlData = {
+                    seminario: $('#seminario').val()
+                };
+                return settings;
+            }
+        },
+        type: 'category',
+        cache: false,
+        maxResults: 10,
+        onSelect: function(result, response){
+            $('#seminario').val(result.id);
+            
+        },
+        onResultsClose: function() {
+            if($('#seminario').val() == '')
+            {
+                $('#seminario').val('');
+            }
+        },
+    });
+    
+});

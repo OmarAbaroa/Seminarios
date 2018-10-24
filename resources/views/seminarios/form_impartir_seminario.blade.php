@@ -102,8 +102,8 @@
         ])
     @endif
         
-        <br>
-        <table class="ui celled striped table">
+    <br>
+    <table class="ui celled striped table">
         <thead>
             <tr>
                 <th>
@@ -175,11 +175,177 @@
         </tbody>
         
     </table>
-
-        
-        
+    @if(count($expositores) > 0)
+        @include('elementos_html.button', [      
+            'class' => 'red labeled margen-boton-accion',
+            'etiqueta' => 'Eliminar todos los expositores',
+            'icono' => 'trash alternate',
+            'tipo' => 'button',
+            'onclick' => 'redireccionar("' . route('eliminar_todos_expositores', ['id' => $seminario->id]) . '")'
+        ])
     
-
+        <br>
+        <table class="ui celled striped table">
+            <thead>
+                <tr>
+                    <th colspan='3' class="ui center aligned">
+                        Expositores
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Número de empleado
+                    </th>
+                    <th>
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(count($expositores) > 0)
+                    
+                    @foreach($expositores as $expositor)
+                        <?php
+                            $_expositor = \App\Expositor::find($expositor->id_expositor);
+                        ?>
+                        <tr>
+                            <td>
+                                
+                                {{$_expositor->nombre_completo}}
+                            </td>
+                            <td>
+                                {{$_expositor->numero_empleado}}
+                            </td>
+                            <td>
+                            
+                                @include('elementos_html.button', [
+                                    'class' => 'red margen-boton-accion',
+                                    'icono' => 'cancel',
+                                    'popup' => 'Eliminar',
+                                    'onclick' => 'abrirModal("eliminar_expositor_' . $expositor->id . '")'
+                                ])
+                                
+                                <div id="eliminar_expositor_{{$expositor->id}}" class="ui modal">
+                                    <div class="header">Eliminar expositor</div>
+                                    <div class="content">
+                                        <form id="form_eliminar_expositor_{{$expositor->id}}" method="post" action="{{route('eliminar_seminario_expositor', ['id' => $expositor->id])}}" class="ui form">
+                                            {{csrf_field()}}
+                                            {{method_field('delete')}}
+                                            <p>
+                                                ¿Seguro desea quitar al expositor <b>{{$_expositor->nombre_completo}}</b> del seminario <b>{{$seminario->nombre}}</b>?
+                                            </p>
+                                        </form>
+                                    </div>
+                                    <div class="actions">
+                                        @include('elementos_html.button', [
+                                            'class' => 'green ok cargar',
+                                            'etiqueta' => 'Sí',
+                                            'onclick' => 'enviarForm("form_eliminar_expositor_' . $expositor->id . '")'
+                                        ])
+                                        <div class="ui red cancel button">No</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="3" class="ui center aligned">
+                            No hay expositores registrados para {{$seminario->nombre}}
+                        </td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+    @endif
+    @if(count($alumnos) > 0)
+        @include('elementos_html.button', [      
+            'class' => 'red labeled margen-boton-accion',
+            'etiqueta' => 'Eliminar todos los alumnos',
+            'icono' => 'trash alternate',
+            'tipo' => 'button',
+            'onclick' => 'redireccionar("' . route('eliminar_todos_alumnos', ['id' => $seminario->id]) . '")'
+        ]) 
+        <br>
+        <table class="ui celled striped table">
+            <thead>
+                <tr>
+                    <th colspan='3' class="ui center aligned">
+                        Alumnos
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Boleta
+                    </th>
+                    <th>
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(count($alumnos) > 0)
+                    
+                    @foreach($alumnos as $alumno)
+                        <?php
+                            $_alumno = \App\Alumno::find($alumno->id_alumno);
+                        ?>
+                        <tr>
+                            <td>
+                                {{$_alumno->nombre_completo}}
+                            </td>
+                            <td>
+                                {{$_alumno->boleta}}
+                            </td>
+                            <td>
+                            
+                                @include('elementos_html.button', [
+                                    'class' => 'red margen-boton-accion',
+                                    'icono' => 'cancel',
+                                    'popup' => 'Eliminar',
+                                    'onclick' => 'abrirModal("eliminar_alumno_' . $alumno->id . '")'
+                                ])
+                                
+                                <div id="eliminar_alumno_{{$alumno->id}}" class="ui modal">
+                                    <div class="header">Eliminar horario</div>
+                                    <div class="content">
+                                        <form id="form_eliminar_alumno_{{$alumno->id}}" method="post" action="{{route('eliminar_seminario_alumno', ['id' => $alumno->id])}}" class="ui form">
+                                            {{csrf_field()}}
+                                            {{method_field('delete')}}
+                                            <p>
+                                                ¿Seguro desea quitar al alumno <b>{{$_alumno->nombre_completo}}</b> del seminario <b>{{$seminario->nombre}}</b>?
+                                            </p>
+                                        </form>
+                                    </div>
+                                    <div class="actions">
+                                        @include('elementos_html.button', [
+                                            'class' => 'green ok cargar',
+                                            'etiqueta' => 'Sí',
+                                            'onclick' => 'enviarForm("form_eliminar_alumno_' . $alumno->id . '")'
+                                        ])
+                                        <div class="ui red cancel button">No</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="3" class="ui center aligned">
+                            No hay alumnos registrados para {{$seminario->nombre}}
+                        </td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+    @endif
+    
     <div id="cargar_horario" class="ui modal">
         <div class="header">Cargar horario</div>
         <div class="content">

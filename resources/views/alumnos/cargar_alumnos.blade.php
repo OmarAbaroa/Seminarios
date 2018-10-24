@@ -13,7 +13,7 @@
     <br/>
     <form id="form_cargar_alumnos" method="post" class="ui form" enctype="multipart/form-data">
         {{csrf_field()}}
-        <div class="two fields">
+        <div class="three fields">
             @include('elementos_html.input_field', [
                 'id' => 'intervalo',
                 'nombre' => 'intervalo',
@@ -21,6 +21,15 @@
                 'placeholder' => 'Ej: 5-7',
                 'anterior' => old('intervalo'),
                 'class' => 'required'
+            ])
+            @include('elementos_html.search_id', [
+                'id' => 'seminario',
+                'nombre' => 'seminario',
+                'etiqueta' => 'Seminario',
+                'class' => 'required',
+                'actual' => isset($seminario)? $seminario->UnidadAcademica->siglas : '',
+                'anterior_id' => old('seminario'),
+                'actual_id' => isset($seminario)? $seminario : '',
             ])
             @include('elementos_html.input_file', [
                 'id' => 'archivo',
@@ -31,6 +40,7 @@
                 'class_boton' => 'primary',
                 'accept' => '.xls, .xlsx, .xlsm'
             ])
+            
         </div>
         <div class="ui grid">
             <div class="row centered">

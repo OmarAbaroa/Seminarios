@@ -176,7 +176,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        
+        //Clase de codedge para archivos en pdf
+        Codedge\Fpdf\FpdfServiceProvider::class,
+        //Clase de maatwebsite para archivos en excel
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
@@ -229,8 +232,11 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'AppServiceProvider' => App\Providers\AppServiceProvider::class,
-
+        //EXCEL
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        //PDF
+        'Fpdf' => Codedge\Fpdf\Facades\Fpdf::class,
+        
 
     ],
 

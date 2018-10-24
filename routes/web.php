@@ -99,6 +99,9 @@ Route::group(['middleware' => ['auth']], function()
         Route::get('/seminarios/impartir', 'ControladorSeminario@verImpartir')->name('impartir_seminario');
         Route::get('/seminarios/impartir/{id}', 'ControladorSeminario@impartir')->name('impartir_seminario_id');
         Route::put('/seminarios/impartir/{id}', 'ControladorSeminario@impartirSeminario');
+        Route::get('/seminarios/buscar', 'ControladorSeminario@buscar')->name('buscar_seminarios');
+        Route::get('seminarios/constancias/{id}', 'ControladorSeminario@verGenerarConstancias')->name('generar_constancia');
+        Route::post('seminarios/constancias/{id}', 'ControladorSeminario@generarConstancias');
 
         Route::patch('/seminario/cargar-horario', 'ControladorHorario@cargar');
         Route::delete('/seminario/horario/eliminar/{id}', 'ControladorHorario@eliminar')->name('eliminar_horario');
@@ -109,6 +112,13 @@ Route::group(['middleware' => ['auth']], function()
         Route::get('/expositores', 'ControladorExpositor@verCargarExpositor')->name('cargar_expositor');
         Route::post('/expositores', 'ControladorExpositor@cargarExpositor');
 
+        Route::delete('/seminario/expositor/{id}', 'ControladorSeminarioExpositor@eliminar')->name('eliminar_seminario_expositor');
+        Route::delete('/seminario/alumno/{id}', 'ControladorSeminarioAlumno@eliminar')->name('eliminar_seminario_alumno');
+        Route::get('/seminario/alumnos/{id}', 'ControladorSeminarioAlumno@eliminarTodos')->name('eliminar_todos_alumnos');
+        Route::get('/seminario/expositores/{id}', 'ControladorSeminarioExpositor@eliminarTodos')->name('eliminar_todos_expositores');
 
+        Route::get('/reportes','ControladorSeminario@verReportes')->name('reportes');
+        Route::post('/reportes/trimestre', 'ControladorSeminario@reporteTrimestre')->name('reporte_trimestre');
+        Route::post('/reportes/ua', 'ControladorSeminario@reporteUA')->name('reporte_vigentes_ua');
     }
 );

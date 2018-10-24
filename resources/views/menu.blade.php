@@ -1,12 +1,5 @@
 @if(!Auth::check())
-    <a class="item" href="buscar_seminarios">
-        <i class="search icon"></i>
-        Buscar seminarios
-    </a>
-    <a class="item" href="ingreso">
-        <i class="sign in icon"></i>
-        Ingresar
-    </a>
+    
 @else
     
     <a class="item" href="{{route('panel')}}">
@@ -43,6 +36,10 @@
     <a class="item" href="{{route('cargar_expositor')}}">
         <i class="cloud upload icon"></i>
         Cargar expositores
+    </a>
+    <a class="item" href="{{route('reportes')}}">
+        <i class="file alternate icon"></i>
+        Reportes
     </a>
     <a class="item" onclick="salir()">
         <i class="sign out icon"></i>

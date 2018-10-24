@@ -9,9 +9,71 @@ Use App\TipoSeminario;
 Use App\Funcionario;
 Use App\Horario;
 Use App\AvisoSeminario;
+Use App\Alumno;
+Use App\Expositor;
+Use App\SeminarioAlumno;
+Use App\SeminarioExpositor;
+Use App\PDFConstanciasAlumnos;
+use App\Opcion;
+use App\PDF;
+use Anouar\Fpdf\Fpdf;
+use Anouar\Fpdf\MakeFont\MakeFont;
 
 class ControladorSeminario extends Controller
 {
+    
+    public function buscar(Request $request)
+    {
+        $seminarios = Seminario::nombre('%' . strtoupper($request->seminario) . '%', 'LIKE')
+            ->where('vigencia_fin', '>', date("Y-m-d"))
+            ->orderBy('id_unidad_academica', 'ASC')
+            ->orderBy('nombre', 'ASC')
+            ->take(10)
+            ->get();
+        
+        $i = 0;
+        $categoria_actual = '';
+        $categoria_anterior = '';
+        $categoria = [];
+        $resultados = [];
+        foreach($seminarios as $seminario)
+        {
+            $categoria_actual = $seminario->UnidadAcademica->siglas;
+            if($categoria_actual != $categoria_anterior)
+            {
+                if($i > 0)
+                {
+                    $resultados['category' . $i] = $categoria;
+                }
+                $i++;
+
+                $categoria['name'] = $categoria_actual;
+                $categoria['results'] = [
+                    [
+                        'id' => $seminario->id,
+                        'title' => $seminario->nombre,
+                    ],
+                ];
+            }
+            else
+            {
+                array_push($categoria['results'], [
+                    'id' => $seminario->id,
+                    'title' => $seminario->nombre,
+                ]);
+            }
+            $categoria_anterior = $categoria_actual;
+        }
+
+        if($i > 0)
+        {
+            $resultados['category' . $i] = $categoria;
+        }
+        $i++;
+
+        return json_encode(["results" => $resultados]);
+    }
+    
     public function cargar()
     {
         
@@ -282,7 +344,8 @@ class ControladorSeminario extends Controller
             $datos['seminario'] = $seminario;
             $datos['accion'] = 'Impartir';
             $datos['boton'] = 'Guardar';
-
+            $datos['alumnos'] = SeminarioAlumno::DeSeminario($id)->get();
+            $datos['expositores'] = SeminarioExpositor::DeSeminario($id)->get();
             return view('seminarios.form_impartir_seminario', $datos);
         }
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.editar'));
@@ -564,5 +627,270 @@ class ControladorSeminario extends Controller
         }
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.eliminar'));
     }
+
+    public function verGenerarConstancias($id)
+    {
+        $seminario = Seminario::find($id);
+        if($seminario)
+        {
+            $datos['seminario'] = $seminario->id;
+            return view('seminarios.constancias.form_generar_constancia', $datos);
+        }
+        return back()->with('mensaje_error', trans('mensajes.seminarios.error.eliminar'));
+    }
+    
+    public function generarConstancias(Request $request)
+    {
+        setlocale(LC_ALL,"es_ES");
+        $archivo = $request->archivo;
+        if(filesize($archivo) > \AppServiceProvider::obtenerTamanoMaximoSubida())
+        {
+            return back()->with('mensaje_error', trans('mensajes.alumnos.error.archivo_tamano'))->withInput();
+        }
+        $mime = \File::mimeType($archivo);
+        if($mime != 'application/vnd.ms-excel' && $mime != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        {
+            return back()->with('mensaje_error', trans('mensajes.alumnos.error.archivo_formato'))->withInput();
+        }
+        $seminario = Seminario::find($request->id_seminario)->first();
         
+        $intervalos = explode(',', str_replace(' ', '', $request->intervalo));
+        $excel = \Excel::selectSheetsByIndex(0)->load($archivo, function($excel) {})->get();
+        $conflicto_texto = '';
+        
+        
+
+        setlocale(LC_ALL,'es_MX', 'es_MX', 'esp');
+        $pdf = new PDFConstanciasAlumnos('P', 'cm', 'Letter', 'titulo', 'tarjeta');
+
+            
+        foreach($excel as $fila)
+        {
+            if(\AppServiceProvider::enIntervalo(trim($fila['numero']), $intervalos))
+            {
+                $numero = trim($fila['numero']);
+                $nombre = strtoupper(trim($fila['nombre']));
+                $apellidos = strtoupper(trim($fila['apellidos']));
+
+                if($request->opcion == 1)
+                {
+                    $calificacion = trim($fila['calificacion']);
+                    $boleta = trim($fila['boleta']);
+                    $calificacion_texto = \AppServiceProvider::CalificacionTexto($calificacion);
+                    $_boleta = Alumno::Boleta($boleta)->first();
+                    $__boleta = SeminarioAlumno::where([['id_alumno','=',$_boleta->id],['deleted_at','=',NULL]])->first();
+                }
+                if($request->opcion == 2)
+                {
+                    $horas = trim($fila['horas']);
+                    $boleta = trim($fila['empleado']);
+                    $_boleta = Expositor::NumeroEmpleado($boleta)->first();
+                    $__boleta = SeminarioExpositor::where([['id_expositor','=',$_boleta->id],['deleted_at','=',NULL]])->first();
+                }
+                if($__boleta)
+                {   
+                    $pdf->addPage();
+                    
+                    $pdf->AddFont('SoberanaSans-Regular', '', 'SoberanaSans-Regular.php');
+                    $pdf->AddFont('ERASMD', '', 'ERASMD.php');
+                    $pdf->AddFont('SoberanaSans-Black', '', 'SoberanaSans-Black.php');
+                    $pdf->SetFont('SoberanaSans-Black','',20);
+                    $pdf->SetXY(20,90);
+                    $pdf->MultiCell(0, 10, utf8_decode($_boleta->nombre_completo), 0, 'C', FALSE);
+                    $pdf->SetFont('SoberanaSans-Regular','',11);
+                    if($request->opcion == 1)
+                        $pdf->Cell(0, 10, utf8_decode('Por su participación en el Seminario de Actualización con Opción a Titulación'), 0, 2, 'C');
+                    if($request->opcion == 2)
+                        $pdf->Cell(0, 10, utf8_decode('Por su participación como expositor en el Seminario de Actualización con Opción a Titulación'), 0, 2, 'C');
+                    $pdf->SetFont('SoberanaSans-Black','',17);
+                    $pdf->Cell(0, 10, utf8_decode('"'.$seminario->nombre.'"'), 0, 2, 'C');
+                    $pdf->Cell(0,0);
+                    $pdf->Ln();
+                    $pdf->SetFont('SoberanaSans-Regular','',11);
+                    $pdf->Cell(0, 13, utf8_decode('Duración '.$seminario->duracion.' horas'), 0, 2, 'C');
+                            
+                    $pdf->SetX(20);
+                    $pdf->SetFont('SoberanaSans-Regular','',8);
+                    $pdf->Cell(70.4, 5, utf8_decode('FOLIO DE AUTORIZACIÓN'), 0, 0, 'C');
+                    if($request->opcion == 1)
+                        $pdf->Cell(35.2, 5, utf8_decode('CALIFICACIÓN'), 0, 0, 'C');
+                    if($request->opcion == 2)
+                        $pdf->Cell(35.2, 5, utf8_decode('IMPARTIÓ'), 0, 0, 'C');
+                    $pdf->Cell(35.2, 5, utf8_decode('PERIODO'), 0, 0, 'C');
+                    $pdf->Cell(35.2, 5, utf8_decode('SEDE'), 0, 2, 'C');
+                    $pdf->SetX(20);
+                        
+                    $pdf->Cell(70.4, 5, utf8_decode($seminario->registro), 0, 0, 'C');
+                    if($request->opcion == 1)
+                        $pdf->Cell(35.2, 5, $calificacion.' ('.$calificacion_texto.') ', 0, 0, 'C');
+                    if($request->opcion == 2)
+                        $pdf->Cell(35.2, 5, $horas.' HORAS ', 0, 0, 'C');
+                    $pdf->Cell(35.2, 5, $seminario->periodo_inicio.' AL '.$seminario->periodo_fin, 0, 0, 'C');
+                    $pdf->Cell(35.2, 5, utf8_decode($seminario->UnidadAcademica->siglas), 0, 2, 'C');
+                    $pdf->Ln();
+                    $pdf->SetFont('SoberanaSans-Regular','',11);
+                    $pdf->MultiCell(0,5, utf8_decode('Con fundamento en el Artículo 44, Fracción VII del Reglamento Orgánico; Artículo 5, Fracción III del Reglamento General de Estudios; Artículo 12 del Reglamento de Titulación Profesional, todos del Instituto Politécnico Nacional, se expide la presente, para efectos de titulación, en la Ciudad de México, '.\AppServiceProvider::fechaTexto()),2,'J');
+                    $pdf->SetXY(20,240);
+                    $pdf->SetFont('ERASMD','',8);
+
+                    $fecha = date('Y-m-d');
+                    $fecha = substr($fecha, 0, 10);
+                    $mes = date('F', strtotime($fecha.' + 365 days'));
+                    $numeroDia = date('d', strtotime($fecha));
+                    $meses_ES = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+                    $meses_EN = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+                    $nombreMes = str_replace($meses_EN, $meses_ES, $mes);
+
+                    $pdf->Cell(0,0,'RMCTB/EGCV/'.$request->iniciales.'*',0,1,'L');
+                    $pdf->Cell(0,0,utf8_decode('Documento valido al día '.date("d").'/'.$nombreMes.'/'.date("Y", strtotime($fecha.' + 1 years'))),0,2,'R');
+
+                }
+                else
+                {
+                    $conflicto_texto .= ' '.$boleta;
+                }
+            }
+        }
+            
+            
+        if($conflicto_texto == '')
+        {
+                
+            $pdf->Output();
+            return back()->with('mensaje_exito', 'Constancias generadas con éxito.')->withInput();    
+            
+        }
+        else{
+            $pdf->Output();
+            if($request->opcion == 1)
+                return back()->with('mensaje_error', 'Los alumnos con boleta '.$conflicto_texto.' no existen')->withInput();
+            if($request->opcion == 2)
+                return back()->with('mensaje_error', 'Los expositores con número '.$conflicto_texto.' no existen')->withInput();
+        }
+    }
+
+    public function verReportes()
+    {
+        $datos['trimestre'] = [
+            new Opcion(1, 'ENERO-MARZO'),
+            new Opcion(2, 'ABRIL-JUNIO'),
+            new Opcion(3, 'JULIO-SEPTIEMBRE'),
+            new Opcion(4, 'OCTUBRE-DICIEMBRE'),
+        ];
+        $datos['ua'] = UnidadAcademica::all();
+        return view('reportes.reportes', $datos);
+    }
+
+    public function reporteTrimestre(Request $request)
+    {
+        $titulo = 'Seminarios en vigencia de ';
+        if($request->trimestre == 1)
+        {
+            $fecha_inicio = $request->anio.'-01-01';
+            $fecha_fin = $request->anio.'-03-31';
+            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+        }
+        elseif($request->trimestre == 2)
+        {
+            $fecha_inicio = $request->anio.'-04-01';
+            $fecha_fin = $request->anio.'-06-30';
+            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+        }
+        elseif($request->trimestre == 3)
+        {
+            $fecha_inicio = $request->anio.'-07-01';
+            $fecha_fin = $request->anio.'-09-30';
+            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+        }
+        elseif($request->trimestre == 4)
+        {
+            $fecha_inicio = $request->anio.'-10-01';
+            $fecha_fin = $request->anio.'-12-31';
+            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+        }
+        else
+            return back()->with('mensaje_error', 'Trimestre sin seleccionar')->withInput();
+        $_seminario_nuevos_registrados = Seminario::where([
+            ['vigencia_inicio', '>=', $fecha_inicio],
+            ['vigencia_inicio', '<=', $fecha_fin],
+        ])->count();
+        $_seminario_con_vigencia = Seminario::where([
+            ['vigencia_fin', '>=', $fecha_fin],
+            ['vigencia_inicio', '<=', $fecha_inicio]
+        ])->orwhere([
+            ['vigencia_inicio', '>=', $fecha_inicio],
+            ['vigencia_inicio', '<=', $fecha_fin]])->count();
+        $pdf = new PDF('P', 'cm', 'Letter', $titulo, 'tarjeta');
+        
+        $pdf->AddPage();
+        $pdf->Ln();
+        $pdf->SetFillColor(220, 220, 220);
+        $pdf->Cell(103.95,5, 'Seminarios vigentes',1,'0','C',true);
+        $pdf->Cell(103.95,5, 'Seminarios nuevos',1,'1','C',true);
+        
+        $pdf->SetFontSize(11);
+        $pdf->Cell(103.95,5, $_seminario_con_vigencia,1,'0','C',false);
+        $pdf->Cell(103.95,5, $_seminario_nuevos_registrados,1,'2','C',false);
+        $pdf->Output();
+        
+    }
+    public function reporteUA(Request $request)
+    {
+        $titulo = 'Seminarios en vigencia por Unidad Académica ';
+
+        $pdf = new PDF('P', 'cm', 'Letter', $titulo, 'tarjeta');
+        
+        $pdf->AddPage();
+        $pdf->Ln();
+        $pdf->SetFillColor(220, 220, 220);
+        $pdf->SetFontSize(12);
+        $pdf->Cell(83.16,5, 'Seminario',1,0,'C',true);
+        $pdf->Cell(41.58,5, utf8_decode('Unidad Académica'),1,0,'C',true);
+        $pdf->Cell(41.58,5, 'Vigencia de inicio',1,0,'C',true);
+        $pdf->Cell(41.58,5, 'Vigencia de fin',1,1,'C',true);
+        $pdf->SetFontSize(8);
+        
+        if(isset($request->unidad_academica))
+        {
+            $seminarios = Seminario::DeUnidadAcademica($request->unidad_academica)->get();
+
+            foreach($seminarios as $seminario)
+            {
+                $pdf->Cell(83.16,5, utf8_decode($seminario->nombre),1,0,'C',false);
+                $pdf->Cell(41.58,5, utf8_decode($seminario->UnidadAcademica->siglas),1,0,'C',false);
+                $pdf->Cell(41.58,5, $seminario->vigencia_inicio,1,0,'C',false);
+                $pdf->Cell(41.58,5, $seminario->vigencia_fin,1,1,'C',false);
+            }
+        }
+        else{
+            $uas = UnidadAcademica::all();
+            foreach($uas as $ua)
+            {
+             
+                $seminarios = Seminario::DeUnidadAcademica($ua->id)->get();
+
+                foreach($seminarios as $seminario)
+                {
+                    $pdf->Cell(83.16,5, utf8_decode($seminario->nombre),1,0,'C',false);
+                    $pdf->Cell(41.58,5, utf8_decode($seminario->UnidadAcademica->siglas),1,0,'C',false);
+                    $pdf->Cell(41.58,5, $seminario->vigencia_inicio,1,0,'C',false);
+                    $pdf->Cell(41.58,5, $seminario->vigencia_fin,1,1,'C',false);
+                }
+            }
+            
+        }
+        /*
+        $pdf->Ln();
+        $pdf->SetFillColor(220, 220, 220);
+        $pdf->Cell(41.58,5, 'Seminarios vigentes',1,'0','C',true);
+        $pdf->Cell(103.95,5, 'Seminarios nuevos',1,'1','C',true);
+        
+        
+        $pdf->Cell(103.95,5, $_seminario_con_vigencia,1,'0','C',false);
+        $pdf->Cell(103.95,5, $_seminario_nuevos_registrados,1,'2','C',false);
+        */
+        $pdf->Output();
+        
+    }
+                
 }
