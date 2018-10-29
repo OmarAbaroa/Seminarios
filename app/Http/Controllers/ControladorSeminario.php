@@ -639,6 +639,35 @@ class ControladorSeminario extends Controller
         }
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.eliminar'));
     }
+
+    public function limpiarSeminario($id)
+    {
+        $seminario = Seminario::find($id);
+        if($seminario)
+        {
+            $seminario->memorandum = 0;
+            $seminario->respuesta = NULL;
+            $seminario->cronograma = 0;
+            $seminario->programa = 0;
+            $seminario->cv_expositores = 0;
+            $seminario->pago = 0;
+            $seminario->rua = 0;
+            $seminario->lista_inicial = 0;
+            $seminario->acta_consejo = 0;
+            $seminario->aval_academico = 0;
+            $seminario->lista_oficial = 0;
+            $seminario->relacion_asistencia = 0;
+            $seminario->evaluacion_final = 0;
+            $seminario->trabajos_finales = 0;
+            $seminario->periodo_inicio = NULL;
+            $seminario->periodo_fin = NULL;
+            $seminario->fecha_entrega_lista_inicial = NULL;
+            $seminario->save();
+
+            return back()->with('mensaje_error', trans('mensajes.seminarios.exito.limpiar'));
+        }
+        return back()->with('mensaje_error', trans('mensajes.seminarios.error.limpiar'));
+    }
     
     public function generarConstancias(Request $request)
     {

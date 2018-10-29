@@ -197,20 +197,19 @@
                             @endif
                             @if($seminario->memorandum == 1 && $seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $sin_vigencia == 0)
                                 @include('elementos_html.button', [
-                                    'class' => 'black margen-boton-accion',
+                                    'class' => 'gray margen-boton-accion',
                                     'icono' => 'file outline',
                                     'popup' => 'Generar respuesta',
                                     'onclick' => 'abrirModal("generar_respuesta_' . $seminario->id . '")'
                                 ])
                             @endif
-                            @if(0 && $seminario->cronograma == 1 && $seminario->programa == 1 && $seminario->cv_expositores == 1 && $seminario->pago == 1 && $seminario->rua == 1 && $seminario->acta_consejo == 1 && $seminario->aval_academico == 1 && $seminario->lista_oficial  == 1 && $seminario->relacion_asistencia == 1 && $seminario->evaluacion_final == 1 && $seminario->trabajos_finales == 1 && $sin_vigencia == 0) 
-                                @include('elementos_html.button', [
-                                    'class' => 'green margen-boton-accion',
-                                    'icono' => 'archive',
-                                    'popup' => 'Generar respuesta',
-                                    'onclick' => 'abrirModal("generar_respuesta_' . $seminario->id . '")'
-                                ])
-                            @endif
+                            @include('elementos_html.button', [
+                                'class' => 'black margen-boton-accion',
+                                'icono' => 'eraser',
+                                'popup' => 'Limpiar seminario',
+                                'onclick' => 'redireccionar("' . route('limpiar_seminario', ['id' => $seminario->id]) . '")'
+                            ])
+                            
                             @include('elementos_html.button', [
                                 'class' => 'red margen-boton-accion',
                                 'icono' => 'cancel',
