@@ -29,6 +29,7 @@
                         {{$usuario->nombre}}
                     </div>
                     <div id="usuario_input" class="oculto">
+                        
                         @include('elementos_html.input',[
                             'id' => 'usuario',
                             'nombre' => 'usuario',

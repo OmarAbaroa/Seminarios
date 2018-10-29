@@ -20,5 +20,14 @@ $('#form_reporte_trimestre').form({
                 }
             ]
         },
+        analista1: {
+            identifier: 'analista1',
+            rules: [
+                {
+                    type: 'empty',
+                    prompt: 'Por favor, ingrese al menos un analista.'
+                }
+            ]
+        },
     }
 });

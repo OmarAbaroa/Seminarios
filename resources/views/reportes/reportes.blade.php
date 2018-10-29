@@ -30,7 +30,29 @@
                 'id' => 'anio',
                 'nombre' => 'anio',
                 'class' => 'required',
+                'placeholder' => 'Año',
                 'etiqueta' => 'Año',
+            ])
+        </div>
+        <div class="three fields">
+            @include('elementos_html.input_field',[
+                'id' => 'analista1',
+                'nombre' => 'analista1',
+                'etiqueta' => 'Analista',
+                'placeholder' => 'Ej: Lic. ',
+                'class' => 'required'
+            ])
+            @include('elementos_html.input_field',[
+                'id' => 'analista2',
+                'nombre' => 'analista2',
+                'etiqueta' => 'Analista',
+                'placeholder' => 'Opcional',
+            ])
+            @include('elementos_html.input_field',[
+                'id' => 'analista3',
+                'nombre' => 'analista3',
+                'etiqueta' => 'Analista',
+                'placeholder' => 'Opcional',
             ])
         </div>
         <div class="ui grid container">

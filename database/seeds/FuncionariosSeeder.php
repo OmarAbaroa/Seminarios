@@ -18,7 +18,7 @@ class FuncionariosSeeder extends Seeder
                 'nombre' => 'EDGAR GREGORIO',
                 'apellidos' => 'CARCAMO VILLALOBOS',
                 'nombre_completo' => 'CARCAMO VILLALOBOS EDGAR GREGORIO',
-                'cargo' => 'JEFE DEL DEPARTAMENTO DE TRAYECTORIAS  ESTUDIANTILES',
+                'cargo' => 'JEFE DEL DEPARTAMENTO DE TRAYECTORIAS ESTUDIANTILES',
                 'id_sexo' => env('SEXO_H'),
             ],
             [
@@ -26,7 +26,7 @@ class FuncionariosSeeder extends Seeder
                 'nombre' => 'CECILIO SHAMAR',
                 'apellidos' => 'SÁNCHEZ NAVA',
                 'nombre_completo' => 'SÁNCHEZ NAVA CECILIO SHAMAR',
-                'cargo' => 'JEFE DE LA DIVISIÓN DE OPERACIÓN DE UNIDADES ACADÉMIAS',
+                'cargo' => 'JEFE DE LA DIVISIÓN DE OPERACIÓN DE UNIDADES ACADÉMICAS',
                 'id_sexo' => env('SEXO_H'),
             ],
             [
@@ -43,6 +43,14 @@ class FuncionariosSeeder extends Seeder
                 'apellidos' => 'CABRERA ROJAS',
                 'nombre_completo' => 'CABRERA ROJAS MARISELA',
                 'cargo' => 'DIRECTOR DE ADMINISTRACIÓN ESCOLAR',
+                'id_sexo' => env('SEXO_M'),
+            ],
+            [
+                'id_escolaridad' => 5,
+                'nombre' => 'EFREN',
+                'apellidos' => 'DORADO MORALES',
+                'nombre_completo' => 'EFREN DORADO MORALES',
+                'cargo' => 'JEFE DE COMPETENCIAS DOCENTES',
                 'id_sexo' => env('SEXO_M'),
             ],
         ];

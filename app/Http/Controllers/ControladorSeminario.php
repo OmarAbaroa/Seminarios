@@ -18,6 +18,7 @@ use App\Opcion;
 use App\PDF;
 use Anouar\Fpdf\Fpdf;
 use Anouar\Fpdf\MakeFont\MakeFont;
+Use App\ConstanciasTrimestreUA;
 
 class ControladorSeminario extends Controller
 {
@@ -678,17 +679,61 @@ class ControladorSeminario extends Controller
                     $boleta = trim($fila['boleta']);
                     $calificacion_texto = \AppServiceProvider::CalificacionTexto($calificacion);
                     $_boleta = Alumno::Boleta($boleta)->first();
-                    $__boleta = SeminarioAlumno::where([['id_alumno','=',$_boleta->id],['deleted_at','=',NULL]])->first();
+                    if($_boleta)
+                        $__boleta = SeminarioAlumno::where([['id_alumno','=',$_boleta->id],['deleted_at','=',NULL]])->first();
+                    else 
+                        $__boleta = NULL;
                 }
                 if($request->opcion == 2)
                 {
                     $horas = trim($fila['horas']);
                     $boleta = trim($fila['empleado']);
                     $_boleta = Expositor::NumeroEmpleado($boleta)->first();
-                    $__boleta = SeminarioExpositor::where([['id_expositor','=',$_boleta->id],['deleted_at','=',NULL]])->first();
+                    if($_boleta)
+                        $__boleta = SeminarioExpositor::where([['id_expositor','=',$_boleta->id],['deleted_at','=',NULL]])->first();
+                    else 
+                        $__boleta = NULL;
                 }
                 if($__boleta)
                 {   
+                    
+                    $mes_constancias = date("m");
+                    $anio_constancias = date("Y");
+                    if($mes_constancias >= 1 &&  $mes_constancias <= 3)
+                    {
+                        $trimestre = 1;
+                    }
+                    if($mes_constancias >= 4 &&  $mes_constancias <= 6)
+                    {
+                        $trimestre = 2;
+                    }
+                    if($mes_constancias >= 7 &&  $mes_constancias <= 9)
+                    {
+                        $trimestre = 3;
+                    }
+                    if($mes_constancias >= 10 &&  $mes_constancias <= 12)
+                    {
+                        $trimestre = 4;
+                    }
+
+                    $constancias_trimestre_ua = ConstanciasTrimestreUA::DeUnidadAcademica($seminario->id_unidad_academica)
+                        ->where([['trimestre','=',$trimestre],['anio','=',$anio_constancias]])
+                        ->first();
+                    
+                    if($constancias_trimestre_ua)
+                    {
+                        $constancias_trimestre_ua->numero_constancias ++;
+                        $constancias_trimestre_ua->save();
+                    }
+                    else
+                    {
+                        $constancias_trimestre_ua = new ConstanciasTrimestreUA;
+                        $constancias_trimestre_ua->id_unidad_academica = $seminario->id_unidad_academica;
+                        $constancias_trimestre_ua->numero_constancias = 1;
+                        $constancias_trimestre_ua->anio = $anio_constancias;
+                        $constancias_trimestre_ua->trimestre = $trimestre;
+                        $constancias_trimestre_ua->save();
+                    }
                     $pdf->addPage();
                     
                     $pdf->AddFont('SoberanaSans-Regular', '', 'SoberanaSans-Regular.php');
@@ -783,56 +828,138 @@ class ControladorSeminario extends Controller
 
     public function reporteTrimestre(Request $request)
     {
-        $titulo = 'Seminarios en vigencia de ';
+        $titulo = 'Información Período';
         if($request->trimestre == 1)
         {
             $fecha_inicio = $request->anio.'-01-01';
             $fecha_fin = $request->anio.'-03-31';
-            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+            $titulo.= ' ENERO - MARZO '.$request->anio;
         }
         elseif($request->trimestre == 2)
         {
             $fecha_inicio = $request->anio.'-04-01';
             $fecha_fin = $request->anio.'-06-30';
-            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+            $titulo.= ' ABRIL - JUNIO '.$request->anio;
         }
         elseif($request->trimestre == 3)
         {
             $fecha_inicio = $request->anio.'-07-01';
             $fecha_fin = $request->anio.'-09-30';
-            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+            $titulo.= ' JULIO - SEPTIEMBRE '.$request->anio;
         }
         elseif($request->trimestre == 4)
         {
             $fecha_inicio = $request->anio.'-10-01';
             $fecha_fin = $request->anio.'-12-31';
-            $titulo.= $fecha_inicio.' a '.$fecha_fin;
+            $titulo.= ' OCTUBRE - DICIEMBRE '.$request->anio;
         }
         else
             return back()->with('mensaje_error', 'Trimestre sin seleccionar')->withInput();
-        $_seminario_nuevos_registrados = Seminario::where([
-            ['vigencia_inicio', '>=', $fecha_inicio],
-            ['vigencia_inicio', '<=', $fecha_fin],
-        ])->count();
-        $_seminario_con_vigencia = Seminario::where([
-            ['vigencia_fin', '>=', $fecha_fin],
-            ['vigencia_inicio', '<=', $fecha_inicio]
-        ])->orwhere([
-            ['vigencia_inicio', '>=', $fecha_inicio],
-            ['vigencia_inicio', '<=', $fecha_fin]])->count();
-        $pdf = new PDF('P', 'cm', 'Letter', $titulo, 'tarjeta');
         
+        $pdf = new PDF('P', 'cm', 'Letter', $titulo, 'tarjeta');
         $pdf->AddPage();
         $pdf->Ln();
         $pdf->SetFillColor(220, 220, 220);
-        $pdf->Cell(103.95,5, 'Seminarios vigentes',1,'0','C',true);
-        $pdf->Cell(103.95,5, 'Seminarios nuevos',1,'1','C',true);
+        $pdf->Cell(73.16,5, utf8_decode('Unidad Académica'),1,'0','C',true);
+        $pdf->Cell(41.58,5, 'Registros nuevos',1,'0','C',true);
+        $pdf->Cell(41.58,5, 'Consecutivos',1,'0','C',true);
+        $pdf->Cell(41.58,5, 'Constancias',1,'1','C',true);
+
+        $uas = UnidadAcademica::all();
+
+        $total_nuevo = 0;
+        $total_consecutivos = 0;
+        $total_constancias = 0;
         
-        $pdf->SetFontSize(11);
-        $pdf->Cell(103.95,5, $_seminario_con_vigencia,1,'0','C',false);
-        $pdf->Cell(103.95,5, $_seminario_nuevos_registrados,1,'2','C',false);
+        $pdf->SetFont('Arial', '', 11);
+
+        foreach($uas as $ua)
+        {
+            $_seminario_nuevos_registrados = Seminario::where([
+                ['vigencia_inicio', '>=', $fecha_inicio],
+                ['vigencia_inicio', '<=', $fecha_fin],
+                ['id_unidad_academica', '=', $ua->id],
+                ])->count();
+            $_seminario_con_vigencia = Seminario::where([
+                ['vigencia_fin', '>=', $fecha_fin],
+                ['vigencia_inicio', '<=', $fecha_inicio],
+                ['id_unidad_academica', '=', $ua->id],
+            ])->orwhere([
+                ['vigencia_inicio', '>=', $fecha_inicio],
+                ['vigencia_inicio', '<=', $fecha_fin],
+                ['id_unidad_academica', '=', $ua->id],
+                ])->count();
+
+            $_constancias = ConstanciasTrimestreUA::where([
+                ['id_unidad_academica','=',$ua->id],
+                ['trimestre','=',$request->trimestre],
+                ['anio','=',$request->anio],
+            ])->first();
+            
+            if($_seminario_con_vigencia > 0 || $_seminario_nuevos_registrados > 0 || $_constancias)
+            {
+                $pdf->Cell(73.16,5, utf8_decode($ua->siglas),1,'0','C',false);    
+                $pdf->Cell(41.58,5, $_seminario_nuevos_registrados,1,'0','C',false);    
+                $pdf->Cell(41.58,5, $_seminario_con_vigencia,1,'0','C',false);
+                $total_nuevo += $_seminario_nuevos_registrados;
+                $total_consecutivos += $_seminario_con_vigencia;
+                if($_constancias)
+                {
+                    $pdf->Cell(41.58,5, $_constancias->numero_constancias,1,'1','C',false);
+                    $total_constancias += $_constancias->numero_constancias;
+                }
+                else
+                    $pdf->Cell(41.58,5, '0',1,'1','C',false);
+            }
+            
+        }
+        $pdf->SetFillColor(105, 105, 105);
+        $pdf->Cell(207.9,5, '',0,'1','C',false);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->Cell(73.16,5, utf8_decode('Totales'),1,'0','C',true);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->Cell(41.58,5, $total_nuevo,1,'0','C',true);
+        $pdf->Cell(41.58,5, $total_consecutivos,1,'0','C',true);
+        $pdf->Cell(41.58,5, $total_constancias,1,'1','C',true);
+
+        $pdf->Cell(207.9,10, '',0,'1','C',false);
+
+        $pdf->SetY(223);
+        $pdf->SetFont('Arial', '', 8);
+        $pdf->Cell(124.71,4,utf8_decode('Información Período'),0,0,'L',false);
+        $pdf->Cell(83.16,4,utf8_decode('Valida Información'),0,1,'L',false);
+        switch($request->trimestre)
+        {
+            case 1:
+                $_trimestre = "ENERO - MARZO";
+                break;
+            case 2:
+                $_trimestre = "ABRIL - JUNIO";
+                break;
+            case 3:
+                $_trimestre = "JULIO - SEPTIEMBRE";
+                break;
+            case 4:
+                $_trimestre = "OCTUBRE - DICIEMBRE";
+                break;
+        }
+        
+        $pdf->Cell(124.71,4,$_trimestre.' '.$request->anio,0,1,'L',false);
+        $pdf->Cell(0,5,'',0,1,'L',false);
+        if(isset($request->analista3))
+            $pdf->Cell(124.71,4,utf8_decode($request->analista3),0,1,'L',false);
+        else
+            $pdf->Cell(124.71,4,'',0,1,'L',false);
+        if(isset($request->analista2))
+            $pdf->Cell(124.71,4,utf8_decode($request->analista2),0,1,'L',false);
+        else
+            $pdf->Cell(124.71,4,'',0,1,'L',false);
+        $_funcionario = Funcionario::Cargo('%COMPETENCIAS DOCENTES%', 'LIKE')->first();
+        $pdf->Cell(124.71,4,utf8_decode($request->analista1),0,0,'L',false);
+        $pdf->Cell(83.16,4,$_funcionario->Escolaridad->nombre.' '.$_funcionario->nombre_completo,0,1,'L',false);
+        $pdf->Cell(124.71,6,'Analistas',0,0,'L',false);
+        $pdf->Cell(83.16,6,$_funcionario->cargo,0,1,'L',false);
         $pdf->Output();
-        
     }
     public function reporteUA(Request $request)
     {
@@ -844,7 +971,7 @@ class ControladorSeminario extends Controller
         $pdf->Ln();
         $pdf->SetFillColor(220, 220, 220);
         $pdf->SetFontSize(12);
-        $pdf->Cell(83.16,5, 'Seminario',1,0,'C',true);
+        $pdf->Cell(73.16,5, 'Seminario',1,0,'C',true);
         $pdf->Cell(41.58,5, utf8_decode('Unidad Académica'),1,0,'C',true);
         $pdf->Cell(41.58,5, 'Vigencia de inicio',1,0,'C',true);
         $pdf->Cell(41.58,5, 'Vigencia de fin',1,1,'C',true);
@@ -856,10 +983,13 @@ class ControladorSeminario extends Controller
 
             foreach($seminarios as $seminario)
             {
-                $pdf->Cell(83.16,5, utf8_decode($seminario->nombre),1,0,'C',false);
-                $pdf->Cell(41.58,5, utf8_decode($seminario->UnidadAcademica->siglas),1,0,'C',false);
-                $pdf->Cell(41.58,5, $seminario->vigencia_inicio,1,0,'C',false);
-                $pdf->Cell(41.58,5, $seminario->vigencia_fin,1,1,'C',false);
+                if($seminario->vigencia_inicio < date("Y-m-d") && $seminario->vigencia_fin > date("Y-m-d"))
+                {
+                    $pdf->Cell(73.16,5, utf8_decode($seminario->nombre),1,0,'C',false);
+                    $pdf->Cell(41.58,5, utf8_decode($seminario->UnidadAcademica->siglas),1,0,'C',false);
+                    $pdf->Cell(41.58,5, $seminario->vigencia_inicio,1,0,'C',false);
+                    $pdf->Cell(41.58,5, $seminario->vigencia_fin,1,1,'C',false);
+                }
             }
         }
         else{
@@ -871,24 +1001,18 @@ class ControladorSeminario extends Controller
 
                 foreach($seminarios as $seminario)
                 {
-                    $pdf->Cell(83.16,5, utf8_decode($seminario->nombre),1,0,'C',false);
-                    $pdf->Cell(41.58,5, utf8_decode($seminario->UnidadAcademica->siglas),1,0,'C',false);
-                    $pdf->Cell(41.58,5, $seminario->vigencia_inicio,1,0,'C',false);
-                    $pdf->Cell(41.58,5, $seminario->vigencia_fin,1,1,'C',false);
+                    if($seminario->vigencia_inicio < date("Y-m-d") && $seminario->vigencia_fin > date("Y-m-d"))
+                    {
+                        $pdf->Cell(73.16,5, utf8_decode($seminario->nombre),1,0,'C',false);
+                        $pdf->Cell(41.58,5, utf8_decode($seminario->UnidadAcademica->siglas),1,0,'C',false);
+                        $pdf->Cell(41.58,5, $seminario->vigencia_inicio,1,0,'C',false);
+                        $pdf->Cell(41.58,5, $seminario->vigencia_fin,1,1,'C',false);
+                    }
                 }
             }
             
         }
-        /*
-        $pdf->Ln();
-        $pdf->SetFillColor(220, 220, 220);
-        $pdf->Cell(41.58,5, 'Seminarios vigentes',1,'0','C',true);
-        $pdf->Cell(103.95,5, 'Seminarios nuevos',1,'1','C',true);
-        
-        
-        $pdf->Cell(103.95,5, $_seminario_con_vigencia,1,'0','C',false);
-        $pdf->Cell(103.95,5, $_seminario_nuevos_registrados,1,'2','C',false);
-        */
+            
         $pdf->Output();
         
     }
