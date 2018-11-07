@@ -96,18 +96,14 @@ class ControladorSeminario extends Controller
             $seminario->duracion = $request->duracion;
             $seminario->id_tipo_seminario = $request->tipo_seminario;
             $seminario->id_unidad_academica = $request->unidad_academica;
-            
+            $_ua = UnidadAcademica::find($request->unidad_academica);
+            $seminario->rvoe = $_ua->rvoe;
             $seminario->sede = NULL;
             
             if(isset($request->sede))
                 $seminario->sede = $request->sede;
             
-            /*if($request->cronograma = "on")
-                $seminario->cronograma = 1;
-            else
-                $seminario->cronograma = 0;
-            */
-
+        
             $seminario->cronograma = isset($request->cronograma);
             $seminario->programa = isset($request->programa);
             $seminario->cv_expositores = isset($request->cv_expositores);
@@ -197,7 +193,10 @@ class ControladorSeminario extends Controller
         }
         $datos['seminarios'] = $seminarios;
         $datos['unidades_academicas'] = UnidadAcademica::all();
-                                            
+        $datos['respuesta'] = [
+            new Opcion(0, 'Favorable'),
+            new Opcion(1, 'Desfavorable'),
+        ];                                    
         return view('seminarios.seminarios', $datos);
     }
 
@@ -250,6 +249,8 @@ class ControladorSeminario extends Controller
             $seminario->duracion = strtoupper($request->duracion);
             $seminario->id_tipo_seminario = $request->tipo_seminario;
             $seminario->id_unidad_academica = $request->unidad_academica;
+            $_ua = UnidadAcademica::find($request->unidad_academica);
+            $seminario->rvoe = $_ua->rvoe;
             if(isset($request->sede))
                 $seminario->sede = $request->sede;
             if($seminario->memorandum == 0)
@@ -381,21 +382,31 @@ class ControladorSeminario extends Controller
         $seminario = Seminario::find($id);
         if($seminario)
         {
+            $datos['seminario'] = $seminario;
+            $datos['respuesta'] = $request->respuesta;
+            
             if($request->respuesta == 0)
             {
                 $seminario->respuesta = "FAVORABLE";
                 $seminario->fecha_entrega_lista_inicial = date("Y-m-d", strtotime(date("Y-m-d").' + 26 days'));
+                $seminario->registro = $request->registro;
+                $seminario->save();
                 $aviso = New AvisoSeminario;
                 $aviso->fecha_entrega_lista_inicial = $seminario->fecha_entrega_lista_inicial;
                 $aviso->id_seminario = $seminario->id;
                 $aviso->estado=0;
                 $aviso->save();
+                
+                return view('oficios.respuesta_favorable', $datos);
             }
             else
             {
                 $seminario->respuesta = "DESFAVORABLE";
+                $seminario->save();
+                return view('oficios.respuesta_desfavorable', $datos);
             }
-            $seminario->save();
+            
+            
             return back()->with('mensaje_exito', trans('mensajes.seminarios.exito.editar'));
         }
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.editar'));
@@ -634,6 +645,11 @@ class ControladorSeminario extends Controller
         $seminario = Seminario::find($id);
         if($seminario)
         {
+            $datos['revoe'] = [
+                new Opcion(1, 'IPN'),
+                new Opcion(2, 'REVOE'),
+            ];
+            
             $datos['seminario'] = $seminario->id;
             return view('seminarios.constancias.form_generar_constancia', $datos);
         }
