@@ -18,6 +18,7 @@ class CrearTablaUnidadAcademica extends Migration
             $table->integer('clave');
             $table->string('siglas');
             $table->string('nombre');
+            $table->boolean('rvoe')->default("0")->nulleable();
             $table->integer('id_area')->unsigned();
 
             $table->timestamps();

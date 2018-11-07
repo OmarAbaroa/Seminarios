@@ -202,6 +202,62 @@ class UnidadAcademicaSeeder extends Seeder
                 'clave' => '68',
                 'id_area' => env('AREA_ICFM'),
             ],
+            [
+                'id' => '28',
+                'siglas' => 'ILB-CENTRO',
+                'nombre' => 'INSTITUTO LEONARDO BRAVO, PLANTEL CENTRO.',
+                'clave' => '100',
+                'id_area' => env('AREA_CSA'),
+                'rvoe' => 1
+            ],
+            [
+                'id' => '29',
+                'siglas' => 'ILB-LA RAZA',
+                'nombre' => 'INSTITUTO LEONARDO BRAVO, PLANTEL LA RAZA.',
+                'clave' => '101',
+                'id_area' => env('AREA_CSA'),
+                'rvoe' => 1
+            ],
+            [
+                'id' => '30',
+                'siglas' => 'ILB-ESTADO DE MÉXICO',
+                'nombre' => 'INSTITUTO LEONARDO BRAVO, PLANTEL ESTADO DE MÉXICO.',
+                'clave' => '102',
+                'id_area' => env('AREA_CSA'),
+                'rvoe' => 1
+            ],
+            [
+                'id' => '31',
+                'siglas' => 'IESCA',
+                'nombre' => 'INSTITUTO DE ENSEÑANZA SUPERIOR EN CONTADURIA Y ADMINISTRACIÓN S.C.',
+                'clave' => '103',
+                'id_area' => env('AREA_CSA'),
+                'rvoe' => 1
+            ],
+            [
+                'id' => '32',
+                'siglas' => 'IMEP',
+                'nombre' => 'INSTITUTO MEXICANO DE EDUCACIÓN PROFESIONAL, PLANTEL SANTA MARTHA.',
+                'clave' => '104',
+                'id_area' => env('AREA_CSA'),
+                'rvoe' => 1
+            ],
+            [
+                'id' => '33',
+                'siglas' => 'GAUSS-JORDÁN',
+                'nombre' => 'INSTITUTO ESPECIALIZADO EN COMPUTACIÓN Y ADMINISTRACIÓN GAUSS JORDÁN.',
+                'clave' => '105',
+                'id_area' => env('AREA_CSA'),
+                'rvoe' => 1
+            ],
+            [
+                'id' => '34',
+                'siglas' => 'UPI',
+                'nombre' => 'UNIVERSIDAD PRIVADA DE IRAPUATO.',
+                'clave' => '106',
+                'id_area' => env('AREA_CSA'),
+                'rvoe' => 1
+            ],
         ];
         foreach($unidades_academicas as $unidad_academica)
         {

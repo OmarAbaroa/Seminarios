@@ -148,6 +148,36 @@ class DirectorSeeder extends Seeder
                 'nombre_cargo' => 'DR. ADOLFO ESCAMILLA ESQUIVEL - DIRECTOR DE LA UNIDAD ACADÉMICA.',
                 'id_unidad_academica' => '27',
             ],
+            [
+                'id' => '28',
+                'nombre_cargo' => 'C. P. HUGO FRANCISCO BRAVO MALPICO - DIRECTOR GENERAL DEL INSTITUTO.',
+                'id_unidad_academica' => '28',
+            ],
+            [
+                'id' => '29',
+                'nombre_cargo' => 'Ing. TONATIUH AGUILETA MONDRAGÓN - COORDINARIO DEL INSTITUTO.',
+                'id_unidad_academica' => '29',
+            ],
+            [
+                'id' => '30',
+                'nombre_cargo' => 'Lic. JOSÉ LUIS GALINDO ALMARAZ - DIRECTOR TÉCNICO DEL INSTITUTO.',
+                'id_unidad_academica' => '31',
+            ],
+            [
+                'id' => '31',
+                'nombre_cargo' => 'Ing. ANA HERNÁNDEZ MAYÉN  - DIRECTORA DEL INSTITUTO.',
+                'id_unidad_academica' => '32',
+            ],
+            [
+                'id' => '32',
+                'nombre_cargo' => 'M. en C. MIGUEL ÁNGEL BAÑUELOS DOSAMANTE - RECTOR DEL INSTITUTO.',
+                'id_unidad_academica' => '33',
+            ],
+            [
+                'id' => '33',
+                'nombre_cargo' => 'C. P. ARTURO SOLIS TORRES - RECTOR DE LA UNIVERSIDAD.',
+                'id_unidad_academica' => '34',
+            ],
         ];
 
         foreach($directores as $director)

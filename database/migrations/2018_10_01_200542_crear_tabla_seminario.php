@@ -34,6 +34,7 @@ class CrearTablaSeminario extends Migration
             $table->boolean('evaluacion_final')->default("0");
             $table->boolean('trabajos_finales')->default("0");
             $table->boolean('memorandum')->default("0");
+            $table->boolean('rvoe')->default("0")->nulleable();
             $table->string('respuesta')->nullable()->default(NULL);
             $table->date('vigencia_inicio')->nullable()->default(NULL);
             $table->date('vigencia_fin')->nullable()->default(NULL);

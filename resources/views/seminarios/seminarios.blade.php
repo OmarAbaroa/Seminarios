@@ -244,10 +244,22 @@
                                     <form id="form_generar_respuesta_{{$seminario->id}}" method="post" action="{{route('generar_respuesta', ['id' => $seminario->id])}}" class="ui form">
                                         {{csrf_field()}}
                                         {{method_field('patch')}}
-                                        <select name='respuesta' id='respuesta'>
-                                            <option value="0">Favorable</option>
-                                            <option value="1">Desfavorable</option>
-                                        </select> 
+                                        @include('elementos_html.select_field',[
+                                            'class' => 'required',
+                                            'etiqueta' => 'Respuesta',
+                                            'id' => 'respuesta',
+                                            'nombre' => 'respuesta',
+                                            'elementos' => $respuesta,
+                                            'sin_seleccion' => 'Seleccione'
+                                        ])
+                                        @include('elementos_html.input_field',[
+                                            'etiqueta' => 'Registro',
+                                            'nombre' => 'registro',
+                                            'id' => 'registro',
+                                            'placerholder' => 'Registro',
+                                            'anterior' => old('registro'),
+                                            'actual' => isset($seminario)? $seminario->registro : '',
+                                        ])
                                     </form>
                                 </div>
                                 <div class="actions">
