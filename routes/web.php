@@ -89,7 +89,7 @@ Route::group(['middleware' => ['auth']], function()
         Route::get('/seminarios', 'ControladorSeminario@verTodos')->name('seminarios');
         Route::get('/seminarios/cargar', 'ControladorSeminario@cargar')->name('cargar_seminario');
         Route::post('/seminarios/cargar', 'ControladorSeminario@almacenar');
-        Route::patch('/seminario/respuesta/{id}', 'ControladorSeminario@generarRespuesta')->name('generar_respuesta');
+        Route::patch('/seminario/respuesta/{id}', 'ControladorOficio@generarRespuesta')->name('generar_respuesta');
 
         Route::get('/seminarios/editar/{id}{impartir}', 'ControladorSeminario@editar')->name('editar_seminario');
         Route::put('/seminarios/editar/{id}{impartir}', 'ControladorSeminario@actualizar');

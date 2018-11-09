@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+Use Session;
 Use DB;
 Use Illuminate\Http\Request;
 Use App\UnidadAcademica;
@@ -378,39 +379,6 @@ class ControladorSeminario extends Controller
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.editar'));
     }
 
-    public function generarRespuesta(Request $request, $id){
-        $seminario = Seminario::find($id);
-        if($seminario)
-        {
-            $datos['seminario'] = $seminario;
-            $datos['respuesta'] = $request->respuesta;
-            
-            if($request->respuesta == 0)
-            {
-                $seminario->respuesta = "FAVORABLE";
-                $seminario->fecha_entrega_lista_inicial = date("Y-m-d", strtotime(date("Y-m-d").' + 26 days'));
-                $seminario->registro = $request->registro;
-                $seminario->save();
-                $aviso = New AvisoSeminario;
-                $aviso->fecha_entrega_lista_inicial = $seminario->fecha_entrega_lista_inicial;
-                $aviso->id_seminario = $seminario->id;
-                $aviso->estado=0;
-                $aviso->save();
-                
-                return view('oficios.respuesta_favorable', $datos);
-            }
-            else
-            {
-                $seminario->respuesta = "DESFAVORABLE";
-                $seminario->save();
-                return view('oficios.respuesta_desfavorable', $datos);
-            }
-            
-            
-            return back()->with('mensaje_exito', trans('mensajes.seminarios.exito.editar'));
-        }
-        return back()->with('mensaje_error', trans('mensajes.seminarios.error.editar'));
-    }
     public function entregoListaInicial(Request $request, $id){
         
         $seminario = Seminario::find($id);
@@ -635,7 +603,9 @@ class ControladorSeminario extends Controller
             //Guardar documento
             $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
             $objWriter->save('Memorandum.doc');
-            return response()->download(public_path('Memorandum.doc'));
+            Session::flash('download.in.the.next.request', 'Memorandum.doc');
+            return back();
+            //return response()->download(public_path('Memorandum.doc'));
         }
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.eliminar'));
     }
