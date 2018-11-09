@@ -16,6 +16,7 @@ class CrearTablaDirector extends Migration
         Schema::create('director', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre_cargo');
+            $table->string('cargo')->nullable()->default(NULL);
             $table->integer('id_unidad_academica')->unsigned();
             $table->timestamps();
             $table->softDeletes();

@@ -75,6 +75,9 @@
                     Nombre
                 </th>
                 <th>
+                    Cargo
+                </th>
+                <th>
                     Unidad Académica
                 </th>
                 <th>
@@ -88,6 +91,9 @@
                     <tr>
                         <td>
                             {{$director->nombre_cargo}}
+                        </td>
+                        <td>
+                            {{$director->cargo}}
                         </td>
                         <td>
                             {{$director->unidadAcademica->siglas}}

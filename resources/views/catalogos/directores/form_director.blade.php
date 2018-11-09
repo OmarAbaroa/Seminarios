@@ -19,10 +19,19 @@
         @include('elementos_html.input_field', [
             'id' => 'nombre',
             'nombre' => 'nombre',
-            'etiqueta' => 'Nombre y cargo',
-            'placeholder' => 'Nombre y cargo',
+            'etiqueta' => 'Nombre',
+            'placeholder' => 'Nombre',
             'anterior' => old('nombre'),
             'actual' => isset($director)? $director->nombre_cargo : '',
+            'class' => 'required'
+        ])
+        @include('elementos_html.input_field', [
+            'id' => 'cargo',
+            'nombre' => 'cargo',
+            'etiqueta' => 'Cargo',
+            'placeholder' => 'Cargo',
+            'anterior' => old('cargo'),
+            'actual' => isset($director)? $director->cargo : '',
             'class' => 'required'
         ])
         @include('elementos_html.select_field', [

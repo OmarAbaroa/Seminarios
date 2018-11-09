@@ -6,7 +6,16 @@ $('#form_director').form({
             rules: [
                 {
                     type: 'empty',
-                    prompt: 'Por favor, ingrese un nombre y cargo.'
+                    prompt: 'Por favor, ingrese un nombre.'
+                }
+            ]
+        },
+        cargo: {
+            identifier: 'cargo',
+            rules: [
+                {
+                    type: 'empty',
+                    prompt: 'Por favor, ingrese un cargo.'
                 }
             ]
         },

@@ -61,6 +61,7 @@ class ControladorDirector extends Controller
         {
             $director = new Director;
             $director->nombre_cargo = strtoupper($request->nombre);
+            $director->cargo = strtoupper($request->cargo);
             $director->id_unidad_academica = $request->unidad_academica;
             $director->save();
 
@@ -94,6 +95,7 @@ class ControladorDirector extends Controller
             if($director)
             {
                 $director->nombre_cargo = strtoupper($request->nombre);
+                $director->cargo = strtoupper($request->cargo);
                 $director->id_unidad_academica = $request->unidad_academica;
                 
                 $director->save();
