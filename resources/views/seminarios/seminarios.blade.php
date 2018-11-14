@@ -260,6 +260,32 @@
                                             'anterior' => old('registro'),
                                             'actual' => isset($seminario)? $seminario->registro : '',
                                         ])
+                                        @if($seminario->vigencia_inicio)
+                                            <?php 
+                                                $_fecha = explode('-',$seminario->vigencia_inicio);
+                                                $fecha = $_fecha[2]."/".$_fecha[1]."/".$_fecha[0];
+                                            ?>
+                                            @include('elementos_html.input_field', [
+                                                'id' => 'vigencia_inicio',
+                                                'nombre' => 'vigencia_inicio',
+                                                'etiqueta' => 'Vigencia de inicio',
+                                                'placeholder' => 'Vigencia de inicio',
+                                                'actual' => $fecha,
+                                                'class' => 'calendario',
+                                                
+                                            ])
+                                        @endif
+                                        @if($seminario->vigencia_inicio == NULL)
+                                            @include('elementos_html.input_field', [
+                                                'id' => 'vigencia_inicio',
+                                                'nombre' => 'vigencia_inicio',
+                                                'etiqueta' => 'Vigencia de inicio',
+                                                'placeholder' => 'Vigencia de inicio',
+                                                'actual' => 'NULL',
+                                                'class' => 'calendario',
+                                                
+                                            ])
+                                        @endif
                                     </form>
                                 </div>
                                 <div class="actions">
