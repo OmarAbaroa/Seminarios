@@ -11,6 +11,14 @@
         <h1 class="ui blue header">Generar constancias</h1>
     </div>
     <br/>
+    @include('elementos_html.button', [
+        'class' => 'yellow margen-boton-accion',
+        'icono' => 'plus',
+        'etiqueta' => 'Generar oficio',
+        'popup' => 'Constancias',
+        'onclick' => 'redireccionar("' . route('generar_oficio_constancia',['id' => $seminario]) . '")'
+    ])
+    <br>
     <form id="form_generar_constancia" method="post" class="ui form" enctype="multipart/form-data" target="_blank">
         {{csrf_field()}}
         @include('elementos_html.input_field',[
