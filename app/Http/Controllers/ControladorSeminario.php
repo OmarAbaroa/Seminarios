@@ -607,7 +607,7 @@ class ControladorSeminario extends Controller
             return back();
             //return response()->download(public_path('Memorandum.doc'));
         }
-        return back()->with('mensaje_error', trans('mensajes.seminarios.error.eliminar'));
+        return back();
     }
 
     public function verGenerarConstancias($id)
@@ -623,7 +623,7 @@ class ControladorSeminario extends Controller
             $datos['seminario'] = $seminario->id;
             return view('seminarios.constancias.form_generar_constancia', $datos);
         }
-        return back()->with('mensaje_error', trans('mensajes.seminarios.error.eliminar'));
+        return back()->with('mensaje_error', 'No fue posible visualizar la información del seminario '.$id);
     }
 
     public function limpiarSeminario($id)
@@ -650,7 +650,7 @@ class ControladorSeminario extends Controller
             $seminario->fecha_entrega_lista_inicial = NULL;
             $seminario->save();
 
-            return back()->with('mensaje_error', trans('mensajes.seminarios.exito.limpiar'));
+            return back()->with('mensaje_exito', trans('mensajes.seminarios.exito.limpiar'));
         }
         return back()->with('mensaje_error', trans('mensajes.seminarios.error.limpiar'));
     }
