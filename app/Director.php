@@ -27,6 +27,16 @@ class Director extends Model
         return ModeloGenerico::scopeGenericoSimple($query, 'nombre_cargo', $nombre_cargo, $comparador, $operador, $operador_null);
     }
 
+    public function scopeCargo($query, $cargo, $comparador = '=', $operador = '&&', $operador_null = '')
+    {
+        return ModeloGenerico::scopeGenericoSimple($query, 'cargo', $cargo, $comparador, $operador, $operador_null);
+    }
+
+    public function scopeUnidadAcademica($query, $id_unidad_academica, $comparador = '=', $operador = '&&', $operador_null = '')
+    {
+        return ModeloGenerico::scopeGenericoSimple($query, 'id_unidad_academica', $id_unidad_academica, $comparador, $operador, $operador_null);
+    }
+
     public function scopeDeUnidadAcademica($query, $id_unidad_academica, $comparador = '=', $operador = '&&' , $operador_null = '')
     {
         return ModeloGenerico::scopeGenericoSimple($query, 'id_unidad_academica', $id_unidad_academica, $comparador, $operador, $operador_null);
