@@ -90,6 +90,8 @@ Route::group(['middleware' => ['auth']], function()
         Route::get('/seminarios/cargar', 'ControladorSeminario@cargar')->name('cargar_seminario');
         Route::post('/seminarios/cargar', 'ControladorSeminario@almacenar');
         Route::patch('/seminario/respuesta/{id}', 'ControladorOficio@generarRespuesta')->name('generar_respuesta');
+        Route::get('/seminario/oficio/constancia/{id}', 'ControladorOficio@generarOficioConstancias')->name('generar_oficio_constancia');
+
 
         Route::get('/seminarios/editar/{id}{impartir}', 'ControladorSeminario@editar')->name('editar_seminario');
         Route::put('/seminarios/editar/{id}{impartir}', 'ControladorSeminario@actualizar');
