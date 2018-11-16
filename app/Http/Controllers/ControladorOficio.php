@@ -16,7 +16,7 @@ const meses = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'juli
 const texto_centrado = array('alignment' => 'center', 'spaceAfter' => 0);
 const texto_derecha = array('alignment' => 'right', 'spaceAfter' => 0);
 const texto_izquierda = array('alignment' => 'left', 'spaceAfter' => 0);
-const texto_justificado = array('alignment' => 'distribute', 'spaceAfter' => 0);
+const texto_justificado = array('alignment' => 'lowKashida', 'spaceAfter' => 0);
 
 const fuente_cuerpo_letra_chica = array('name' => 'Soberana Sans', 'size' => '8', 'bold' => false);
 const fuente_cuerpo_letra_chica_b = array('name' => 'Soberana Sans', 'size' => '8', 'bold' => true);
@@ -113,7 +113,7 @@ class ControladorOficio extends Controller
         
         $texto = texto_articulo.'------ le ';
         $texto .= 'comunico que se le ha autorizado el Seminario con Opción a Titulación:';
-        $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
+        $section->addText($texto, fuente_cuerpo_texto, texto_justificado);
         $section->addText('', fuente_cuerpo_texto, texto_izquierda);
 
         $section->addText($seminario->nombre, fuente_cuerpo_texto_b, texto_centrado);
@@ -171,16 +171,16 @@ class ControladorOficio extends Controller
         $section->addText('', fuente_cuerpo_texto, texto_izquierda);
         $texto = 'Enviar la lista inicial oficial de participantes, firmada y sellada por el Coordinador del Seminario y Subdirector Académico dentro de los ';
         $texto .= 'primeros diez días hábiles posteriores a la fecha del inicio del seminario.';
-        $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
+        $section->addText($texto, fuente_cuerpo_texto, texto_justificado);
         $texto = 'Dar a conocer a los participantes el número de vigencia correspondiente, para trámites de titulación ante la Dirección de Administración Escolar.';
-        $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
+        $section->addText($texto, fuente_cuerpo_texto, texto_justificado);
         $texto = 'Al concluir el programa del seminario enviar la relación de asistencia, de evaluación final y de trabajos finales, en un plazo no mayor a 20 ';
         $texto .= 'días hábiles, para la emisión de las constancias a los participantes.';
-        $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
+        $section->addText($texto, fuente_cuerpo_texto, texto_justificado);
         $texto = 'Cabe señalar que tanto la información emitida para la autorización de vigencia, como los datos de los participantes utilizados en la emisión ';
         $texto .= 'de constancias, está sustentada en los anexos adjuntos a los Oficios enviados por usted, por lo que solicito verificarla a detalle ';
         $texto .= 'previamente a su trámite.';
-        $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
+        $section->addText($texto, fuente_cuerpo_texto, texto_justificado);
         $texto = 'Sin otro particular, le envío un cordial saludo.';
         $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
         $section->addText('', fuente_cuerpo_texto, texto_izquierda);
@@ -231,7 +231,7 @@ class ControladorOficio extends Controller
             $texto = texto_articulo.' ------------- y ';
             $texto .= 'después del dictamen técnico académico, le comunico que su solicitud de actualización del Seminario de Actualización con Opción a ';
             $texto .= 'Titulación “'.$seminario->nombre.'” quedará pendiente debido a -------';
-            $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
+            $section->addText($texto, fuente_cuerpo_texto, texto_justificado);
             $section->addText('', fuente_cuerpo_texto, texto_izquierda);
             $section->addText('---------------', fuente_cuerpo_texto, texto_izquierda);
             $section->addText('', fuente_cuerpo_texto, texto_izquierda);
@@ -248,7 +248,7 @@ class ControladorOficio extends Controller
             $texto = texto_articulo.' ----------- en el ';
             $texto .= 'cual envía copia del oficio ---------------- de '.$seminario->UnidadAcademica->nombre.', solicitando la revisión de los trabajos finales ';
             $texto .= 'del Seminario con Opción a Titulación: “GESTIÓN DE NEGOCIOS”, le informo lo siguiente:';
-            $section->addText($texto, fuente_cuerpo_texto, texto_izquierda);
+            $section->addText($texto, fuente_cuerpo_texto, texto_justificado);
             $section->addText('', fuente_cuerpo_texto, texto_izquierda);
         }
 
@@ -304,7 +304,7 @@ class ControladorOficio extends Controller
 
             $texto = texto_articulo.'--------, le envio -- constancias del Seminario de Titulación, “'.$seminario->nombre.'”, con número de vigencia ';
             $texto .= $seminario->registro.', impartido en la Unidad Académica a su digno cargo del ------------, solicitándole sean entregadas a los interesados.';
-            $section->addText($texto, fuente_cuerpo_constancia, texto_izquierda);
+            $section->addText($texto, fuente_cuerpo_constancia, texto_justificado);
             $section->addText('', fuente_cuerpo_constancia, texto_izquierda);
         }
         else
@@ -321,14 +321,14 @@ class ControladorOficio extends Controller
             $texto = texto_articulo.'en el cual envió copia del oficio ----------, de .'.$seminario->UnidadAcademica->nombre.', solicitando la emisión de ';
             $texto .= 'las constancias del Seminario de Titulación , “'.$seminario->nombre.'”, con número de vigencia '.$seminario->registro. ', ';
             $texto .= 'le anexo las mismas solicitándole sean enviada al plantel mencionado y sean entregadas a los interesados.';
-            $section->addText($texto, fuente_cuerpo_constancia, texto_izquierda);
+            $section->addText($texto, fuente_cuerpo_constancia, texto_justificado);
             $section->addText('', fuente_cuerpo_constancia, texto_izquierda);
 
         }
 
-        $section->addText('Cabe mencionar que la información contenida en las constancias está sustentada en los anexos adjuntos al Oficio anteriormente citado.', fuente_cuerpo_texto, texto_izquierda);
+        $section->addText('Cabe mencionar que la información contenida en las constancias está sustentada en los anexos adjuntos al Oficio anteriormente citado.', fuente_cuerpo_texto, texto_justificado);
         $section->addText('', fuente_cuerpo_constancia, texto_izquierda);
-        $section->addText('Sin otro particular, me es grato enviarle un cordial saludo.', fuente_cuerpo_constancia, texto_izquierda);
+        $section->addText('Sin otro particular, me es grato enviarle un cordial saludo.', fuente_cuerpo_constancia, texto_justificado);
         $section->addText('', fuente_cuerpo_constancia, texto_izquierda);
 
         $section->addText('', fuente_cuerpo_constancia, texto_izquierda);
