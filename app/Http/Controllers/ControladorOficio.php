@@ -350,7 +350,7 @@ class ControladorOficio extends Controller
         
         Session::flash('download.in.the.next.request', 'OficioConstancia.docx');
         
-        return redirect()->route('reportes');
+        return redirect()->route('panel');
         
     }
     function cabeceraOficio($section){
