@@ -16,7 +16,7 @@
         @if(isset($unidad_academica))
             {{method_field('put')}}
         @endif
-        <div class="fields">
+        <div class="three fields">
             @include('elementos_html.input_field', [
                 'id' => 'siglas',
                 'nombre' => 'siglas',
@@ -35,7 +35,7 @@
                 'actual' => isset($unidad_academica)? $unidad_academica->nombre : '',
                 'class' => 'required ten wide'
             ])
-            @include('elementos_html.input_field', [
+        @include('elementos_html.input_field', [
                 'id' => 'clave',
                 'nombre' => 'clave',
                 'etiqueta' => 'Clave',
@@ -44,17 +44,25 @@
                 'actual' => isset($unidad_academica)? $unidad_academica->clave : '',
                 'class' => 'required two wide'
             ])
+            
         </div>
-        @include('elementos_html.select_field', [
-            'id' => 'area',
-            'nombre' => 'area',
-            'etiqueta' => 'Área',
-            'sin_seleccion' => 'Seleccione el área de la Unidad Académica',
-            'anterior' => old('area'),
-            'actual' => isset($unidad_academica)? $unidad_academica->id_area : '',
-            'elementos' => $areas,
-            'class' => 'required'
-        ])
+            @include('elementos_html.select_field', [
+                'id' => 'area',
+                'nombre' => 'area',
+                'etiqueta' => 'Área',
+                'sin_seleccion' => 'Seleccione el área de la Unidad Académica',
+                'anterior' => old('area'),
+                'actual' => isset($unidad_academica)? $unidad_academica->id_area : '',
+                'elementos' => $areas,
+                'class' => 'required'
+            ])
+            @include('elementos_html.checkbox', [
+                'id' => 'rvoe',
+                'nombre' => 'rvoe',
+                'etiqueta' => '¿Pertenece a RVOE?',
+                'anterior' => old('rvoe'),                
+            ])
+        
         <div class="ui grid">
             <div class="row centered">
                 @include('elementos_html.button', [

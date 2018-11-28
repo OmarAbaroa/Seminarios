@@ -68,6 +68,7 @@ class ControladorUnidadAcademica extends Controller
                 $unidad_academica->nombre = $request->nombre;
                 $unidad_academica->clave = $request->clave;
                 $unidad_academica->id_area = $request->area;
+                $unidad_academica->rvoe = isset($request->rvoe);
                 $unidad_academica->save();
 
                 return redirect()->route('unidades_academicas')->with('mensaje_exito', trans('mensajes.unidades_academicas.exito.almacenar'));
