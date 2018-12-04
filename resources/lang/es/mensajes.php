@@ -29,6 +29,7 @@ return [
             'actualizar' => 'El seminario ha sido guardado correctamente.',
             'eliminar' => 'El seminario ha sido eliminado correctamente.',
             'limpiar' => 'El seminario se ha limpiado correctamente.',
+            'editar' => 'El seminario se ha editado correctamente.',
         ],
         'error' => [
             'nombre' => 'El nombre del seminario ingresado se encuentra en uso.',
