@@ -20,7 +20,7 @@ class CrearTablaExpositor extends Migration
             $table->string('nombre_completo');
             $table->string('numero_empleado');
             $table->integer('id_escolaridad')->unsigned()->nullable()->default(NULL);
-            $table->integer('id_sexo')->unsigned()->nulleable()->default(NULL);
+            $table->integer('id_sexo')->unsigned()->nullable()->default(NULL);
             $table->string('extension')->nullable()->default(NULL);
             $table->string('correo')->nullable()->default(NULL);
             $table->string('telefono')->nullable()->default(NULL);
